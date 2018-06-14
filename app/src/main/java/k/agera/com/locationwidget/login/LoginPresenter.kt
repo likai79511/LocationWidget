@@ -1,34 +1,51 @@
 package k.agera.com.locationwidget.login
 
-import android.text.TextUtils
-import k.agera.com.locationwidget.core.TaskDriver
-import k.agera.com.locationwidget.network.NetUtils
-import k.agera.com.locationwidget.network.Restful
-
 /**
  * Created by Agera on 2018/6/14.
  */
-class LoginPresenter {
+class LoginPresenter() : LoginCallback {
 
-    interface CallBack {
-        fun onSuccess(content: String)
-        fun onError()
+
+    private var mViewHelper: LoginView? = null
+    private var model = LoginModel.instance(this)
+
+    fun attachView(vh: LoginView) {
+        mViewHelper = vh
     }
 
-    companion object {
-        private val presenter = LoginPresenter()
-        fun instance() = presenter
+    fun detachView() {
+        mViewHelper = null
     }
 
 
-    fun login(tel: String, password: String,callBack:CallBack) {
-        TaskDriver.instance().execute(Runnable {
-            var content = NetUtils.instance().executeRequest(Restful.instance().login(tel, password))
-            if (TextUtils.isEmpty(content)){
-                callBack.onError()
-            }else{
-                callBack.onSuccess(content!!)
-            }
-        })
+    fun isViewAttached() = mViewHelper != null
+
+
+    fun checkDataFormat(tel: String?, password: String?): Boolean {
+        if (!isViewAttached())
+            return false
+
+        if (!model.checkTel(tel)) {
+            mViewHelper?.onError("tel is incorrect")
+            return false
+        }
+
+        if (!model.checkPassword(password)) {
+            mViewHelper?.onError("password is incorrect")
+            return false
+        }
+        return true
+    }
+
+    fun login(tel: String?, password: String?) {
+        if (!checkDataFormat(tel, password)) return
+        model.login(tel!!,password!!)
+    }
+
+    override fun onsuccess() {
+
+    }
+
+    override fun onError() {
     }
 }

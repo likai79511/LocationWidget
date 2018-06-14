@@ -22,16 +22,13 @@ class NetUtils private constructor() {
         try {
             var url = URL(req.url)
             var connection = url.openConnection() as HttpURLConnection
-
             connection.requestMethod = if (req.method == RequestMethod.Get) "GET" else "POST"
-            connection.requestMethod = "GET"
-
+            //add header
             req.header?.let {
                 for ((k, v) in it) {
                     connection.addRequestProperty(k, v)
                 }
             }
-
             connection.connectTimeout = timeout
             connection.readTimeout = timeout
 
@@ -39,10 +36,8 @@ class NetUtils private constructor() {
             var responseCode = connection.responseCode
 
 
-            Log.e("---", "--response code:" + responseCode)
             if (HttpURLConnection.HTTP_OK == responseCode) {
                 var content = InputStreamReader(connection.inputStream).readText()
-                Log.e("---", "--response content: $content")
                 return content
             } else {
                 Log.e("---", "--- executeRequest failed, responseCode:$responseCode")

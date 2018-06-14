@@ -3,20 +3,20 @@ package k.agera.com.locationwidget.login
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
+import android.support.design.widget.Snackbar
 import android.widget.EditText
-import k.agera.com.locationwidget.CommonUtils
 import k.agera.com.locationwidget.R
 import k.agera.com.locationwidget.map.MapActivity
 
 /**
  * Created by Agera on 2018/6/13.
  */
-class LoginActivity : Activity() {
+class LoginActivity : Activity(), LoginView {
+
 
     lateinit var mEt_tel: EditText
     lateinit var mEt_password: EditText
-
+    lateinit var mPresenter: LoginPresenter
     var tel: String? = null
     var password: String? = null
 
@@ -27,39 +27,26 @@ class LoginActivity : Activity() {
         mEt_tel = findViewById(R.id.et_tel) as EditText
         mEt_password = findViewById(R.id.et_password) as EditText
 
+        mPresenter = LoginPresenter()
+        mPresenter.attachView(this)
+
         findViewById(R.id.btn_login).setOnClickListener {
-
-            if (!checkDataAvaliable()) return@setOnClickListener
-
-            //login success
-            startActivity(Intent(LoginActivity@ this, MapActivity::class.java))
+            tel = mEt_tel.text?.toString()
+            password = mEt_password.text?.toString()
+            mPresenter.login(tel,password)
         }
     }
 
-    fun checkDataAvaliable(): Boolean {
-        tel = mEt_tel.text?.toString()
-        password = mEt_tel.text?.toString()
-
-        if (!CommonUtils.instance().checkTel(tel) || !CommonUtils.instance().checkPassword(password)) {
-            CommonUtils.instance().showLongMessage(mEt_tel, "tel or password is incorrect")
-            return false
-        }
-
-
-        LoginPresenter.instance().login(tel!!, password!!, object : LoginPresenter.CallBack {
-            override fun onSuccess(content: String) {
-                Log.e("---", "--result: $content")
-            }
-
-            override fun onError() {
-                Log.e("---", "--result is error --")
-            }
-
-        })
-
-
-        return true
-
+    override fun onSuccess() {
+        startActivity(Intent(LoginActivity@ this, MapActivity::class.java))
     }
 
+    override fun onError(msg: String) {
+        Snackbar.make(mEt_tel, msg, Snackbar.LENGTH_SHORT).show()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mPresenter.detachView()
+    }
 }

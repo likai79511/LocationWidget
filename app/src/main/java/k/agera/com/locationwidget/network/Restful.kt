@@ -31,7 +31,7 @@ class Restful {
 
 
     fun login(tel: String, password: String): HttpRequest {
-        return HttpRequestFactory.instance().url("$user_url?where={\"telephone\":\"$tel\",\"password\":\"$password\"}")
+        return HttpRequestFactory.instance().url("$user_url?where={\"tel\":\"$tel\",\"password\":\"$password\"}")
                 .method(RequestMethod.Get)
                 .header(bombHeader)
                 .compile()
