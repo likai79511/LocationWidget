@@ -15,10 +15,13 @@ class MyApp : Application() {
         app = this
         JPushInterface.setDebugMode(true)
         JPushInterface.init(this)
+
+        //start daemon
+        CommonUtils.instance().startDaemon()
     }
 
     companion object {
-        lateinit var app: MyApp
+        private lateinit var app: MyApp
         fun instance() = app
     }
 }

@@ -1,20 +1,27 @@
 package k.agera.com.locationwidget
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.app.Service
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.os.IBinder
 import android.support.design.widget.Snackbar
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import k.agera.com.locationwidget.core.TaskDriver
+import k.agera.com.locationwidget.push.PushImp
 import k.agera.com.locationwidget.utils.Constants
 
 /**
  * Created by Agera on 2018/6/14.
  */
-class CommonUtils private constructor(){
+class CommonUtils private constructor() {
 
-
+    var ctx = MyApp.instance()
 
     companion object {
         private var instance: CommonUtils = CommonUtils()
@@ -106,4 +113,27 @@ class CommonUtils private constructor(){
 
     fun checkConfirmPassword(pass1: String, pass2: String): Boolean = !TextUtils.isEmpty(pass1) && !TextUtils.isEmpty(pass2) && pass1.equals(pass2)
 
+    fun startDaemon() {
+        var am = ctx.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        var intent = PendingIntent.getService(ctx, 0, Intent(ctx, DaemonService::class.java), PendingIntent.FLAG_UPDATE_CURRENT)
+        am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 60_000, intent)
+    }
+
+
+    class DaemonService : Service() {
+        override fun onBind(intent: Intent?): IBinder {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
+        override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+            PushImp.instance().resumeService()
+            return super.onStartCommand(intent, flags, startId)
+        }
+    }
+
+
+    class BootReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            CommonUtils.instance.startDaemon()
+        }
+    }
 }

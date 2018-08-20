@@ -18,4 +18,7 @@ interface PushInter {
 
     //send message
     fun sendLocationTo(location: LocationData, to:String)
+
+    //check and resume
+    fun resumeService()
 }

@@ -3,7 +3,9 @@
     package="k.agera.com.locationwidget">
 
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
 
     <application
         android:name=".MyApp"
@@ -12,7 +14,8 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".login.LoginActivity"
+        <activity
+            android:name=".login.LoginActivity"
             android:windowSoftInputMode="adjustResize|stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,17 +24,22 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".map.MapActivity" />
 
-        <receiver android:name=".widget.WidgetPannel">
+        <!--App Deamon-->
+        <service android:name=".CommonUtils$DaemonService" />
+        <receiver android:name=".CommonUtils$BootReceiver">
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
             </intent-filter>
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/widget_pannel" />
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_MOUNTED" />
+                <action android:name="android.intent.action.MEDIA_UNMOUNTED" />
+
+                <data android:scheme="file"></data>
+            </intent-filter>
         </receiver>
 
-        <activity android:name=".map.MapActivity"/>
     </application>
 
 </manifest>
