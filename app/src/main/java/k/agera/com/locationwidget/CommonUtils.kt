@@ -116,7 +116,7 @@ class CommonUtils private constructor() {
     fun startDaemon() {
         var am = ctx.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         var intent = PendingIntent.getService(ctx, 0, Intent(ctx, DaemonService::class.java), PendingIntent.FLAG_UPDATE_CURRENT)
-        am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 60_000, intent)
+        am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 3600_000, intent)
     }
 
 
