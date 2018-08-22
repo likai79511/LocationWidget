@@ -39,13 +39,14 @@ class SignImp : SignInter {
 
                     Log.e("---", "--response code is $responseCode")
 
-                    if (responseCode in 200..300) {
+                    if (responseCode !in 200..300) {
                         result = Result.failure()
                         return@ifSucceededSendTo
                     }
 
                     var data = it.bodyString.get()
                     Log.e("---", "--the final result is $data")
+                    result = Result.success(data)
                 }
                 .ifFailedSendTo {
                     Log.e("---", "---signUp appear error: ${it.message}")
