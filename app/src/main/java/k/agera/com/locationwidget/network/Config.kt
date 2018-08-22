@@ -23,8 +23,6 @@ class Config {
 
         val userTable = "https://api.bmob.cn/1/classes/user"
 
-
-
     }
 
 

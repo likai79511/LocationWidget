@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:gravity="center"
-        android:text="Sign up"
+        android:text="注  册"
         android:textSize="18dp" />
 
     <View
@@ -29,7 +29,7 @@
             android:layout_height="50dp"
             android:layout_marginTop="30dp"
             android:background="@drawable/circle_rect"
-            android:hint="telephone"
+            android:hint="手机号码"
             android:maxLength="11"
             android:inputType="number"
             android:padding="5dp" />
@@ -40,16 +40,16 @@
             android:layout_height="50dp"
             android:layout_marginTop="20dp"
             android:background="@drawable/circle_rect"
-            android:hint="password"
+            android:hint="密码"
             android:padding="5dp" />
 
         <Button
-            android:id="@+id/btn_sign_in"
+            android:id="@+id/btn_sign_up"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:layout_marginTop="50dp"
-            android:text="Sign in" />
+            android:text="注册" />
     </LinearLayout>
 
 </LinearLayout>

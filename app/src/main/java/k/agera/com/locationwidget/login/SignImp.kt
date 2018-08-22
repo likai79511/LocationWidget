@@ -30,34 +30,40 @@ class SignImp : SignInter {
     }
 
     override fun signUp(account: String, password: String): Result<String> {
-
-
         NetCore.instance().doPost(Config.userTable, Config.BombHeaders, gson.toJson(User(account, password)))
                 .ifSucceededSendTo {
-
                     var responseCode = it.responseCode
-
-                    Log.e("---", "--response code is $responseCode")
-
                     if (responseCode !in 200..300) {
                         result = Result.failure()
                         return@ifSucceededSendTo
                     }
-
                     var data = it.bodyString.get()
-                    Log.e("---", "--the final result is $data")
                     result = Result.success(data)
                 }
                 .ifFailedSendTo {
                     Log.e("---", "---signUp appear error: ${it.message}")
                     result = Result.failure()
                 }
-
         return result
     }
 
     override fun signIn(account: String, password: String): Result<String> {
-
-        return Result.failure()
+        NetCore.instance().doGet("${Config.userTable}?where{\"account\":\"$account\",\"password\":\"$password\"}", Config.BombHeaders)
+                .ifSucceededSendTo {
+                    var responseCode = it.responseCode
+                    if (responseCode !in 200..300) {
+                        result = Result.failure()
+                        return@ifSucceededSendTo
+                    }
+                    var data = it.bodyString.get()
+                    Log.e("---","---data:$data")
+                    result = Result.failure()
+//                    result = Result.success(data)
+                }
+                .ifFailedSendTo {
+                    Log.e("---", "---signUp appear error: ${it.message}")
+                    result = Result.failure()
+                }
+        return result
     }
 }

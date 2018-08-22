@@ -1,6 +1,7 @@
 package k.agera.com.locationwidget.login
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.inputmethod.InputMethodManager
@@ -39,14 +40,12 @@ class SignUpActivity : BaseActivity(), Updatable {
         mEt_accound = findViewById(R.id.et_account) as EditText
         mEt_password = findViewById(R.id.et_password) as EditText
 
-
         initEvents()
-
     }
 
     fun initEvents() {
 
-        findViewById(R.id.btn_sign_in).setOnClickListener {
+        findViewById(R.id.btn_sign_up).setOnClickListener {
             activeOnce = Result.success(true)
             (MyApp.instance().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(it.windowToken, 0)
             clickObservable.onClick(it)
@@ -59,7 +58,6 @@ class SignUpActivity : BaseActivity(), Updatable {
                 }
                 .orSkip()
                 .attemptGetFrom {
-                    Log.e("---","---attemptGetFrom---")
                     account = mEt_accound.text?.toString()
                     password = mEt_password.text?.toString()
 
@@ -77,6 +75,7 @@ class SignUpActivity : BaseActivity(), Updatable {
                 .goTo(TaskDriver.instance().mExecutor)
                 .typedResult(String::class.java)
                 .thenTransform {
+                    CommonUtils.instance().showShortMessage(mEt_accound, "正在注册...")
                     SignImp.instance().signUp(account!!, password!!)
                 }
                 .notifyIf { _, v2 ->
@@ -86,13 +85,16 @@ class SignUpActivity : BaseActivity(), Updatable {
                     v2.succeeded()
                 }
                 .compile()
-
         mRep.addUpdatable(this)
     }
 
 
     override fun update() {
-        Log.e("---", "----update----")
+        CommonUtils.instance().showShortMessage(mEt_accound, "注册成功，跳转登录页面...")
+        TaskDriver.instance().mMainHandler.postDelayed({
+            startActivity(Intent(SignUpActivity@ this, SignInActivity::class.java))
+            finish()
+        }, 1_500)
     }
 
 
