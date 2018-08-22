@@ -17,7 +17,7 @@ class Config {
 
         val BombHeaders = AppendMap<String, String>().put("X-Bmob-Application-Id", applicationId)
                 .put("X-Bmob-REST-API-Key", api_key)
-                .put("X-Bmob-REST-API-Key", "application/json")
+                .put("Content-Type", "application/json")
                 .compile()
 
 

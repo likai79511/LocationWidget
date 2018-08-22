@@ -39,7 +39,7 @@ class SignImp : SignInter {
 
                     Log.e("---", "--response code is $responseCode")
 
-                    if (responseCode != 200) {
+                    if (responseCode in 200..300) {
                         result = Result.failure()
                         return@ifSucceededSendTo
                     }
