@@ -27,9 +27,11 @@
             android:id="@+id/et_account"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="@drawable/circle_rect"
             android:layout_marginTop="30dp"
+            android:background="@drawable/circle_rect"
             android:hint="telephone"
+            android:maxLength="11"
+            android:inputType="number"
             android:padding="5dp" />
 
         <EditText

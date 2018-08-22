@@ -1,26 +1,36 @@
 package k.agera.com.locationwidget.login
 
-import android.app.Activity
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import com.google.android.agera.Repositories
 import com.google.android.agera.Repository
-import com.google.android.agera.RepositoryCompilerStates
+import com.google.android.agera.Result
 import com.google.android.agera.Updatable
+import k.agera.com.locationwidget.BaseActivity
+import k.agera.com.locationwidget.CommonUtils
+import k.agera.com.locationwidget.MyApp
 import k.agera.com.locationwidget.R
+import k.agera.com.locationwidget.core.TaskDriver
 import k.agera.com.locationwidget.utils.ClickObservable
 
 /**
  * Created by Agera on 2018/8/21.
  */
-class SignUpActivity : Activity(), Updatable {
+class SignUpActivity : BaseActivity(), Updatable {
 
 
     lateinit var mEt_accound: EditText
     lateinit var mEt_password: EditText
-    lateinit var mRep:Repository<String>
+    lateinit var mRep: Repository<Result<String>>
     var clickObservable = ClickObservable()
 
+    var activeOnce = Result.failure<Boolean>()
+
+    var account: String? = null
+    var password: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,23 +42,58 @@ class SignUpActivity : Activity(), Updatable {
 
         initEvents()
 
-        overridePendingTransition()
     }
 
     fun initEvents() {
 
-        findViewById(R.id.btn_sign_in).setOnClickListener(clickObservable)
-
-        mRep = Repositories.repositoryWithInitialValue("")
+        findViewById(R.id.btn_sign_in).setOnClickListener {
+            activeOnce = Result.success(true)
+            (MyApp.instance().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(it.windowToken, 0)
+            clickObservable.onClick(it)
+        }
+        mRep = Repositories.repositoryWithInitialValue(Result.absent<String>())
                 .observe(clickObservable)
                 .onUpdatesPerLoop()
-                .getFrom {
-                    mEt_accound.text?.toString()
+                .attemptGetFrom {
+                    activeOnce
                 }
+                .orSkip()
+                .attemptGetFrom {
+                    Log.e("---","---attemptGetFrom---")
+                    account = mEt_accound.text?.toString()
+                    password = mEt_password.text?.toString()
 
+                    if (account == null || password == null) {
+                        CommonUtils.instance().showLongMessage(mEt_accound, "请输入正确的账号和密码.")
+                        Result.failure<String>()
+                    }
+                    var check = SignImp.instance().checkDataFormat(account!!, password!!)
+                    check.ifFailedSendTo {
+                        CommonUtils.instance().showLongMessage(mEt_accound, it.message!!)
+                    }
+                    check
+                }
+                .orSkip()
+                .goTo(TaskDriver.instance().mExecutor)
+                .typedResult(String::class.java)
+                .thenTransform {
+                    SignImp.instance().signUp(account!!, password!!)
+                }
+                .notifyIf { _, v2 ->
+                    if (v2.failed()) {
+                        CommonUtils.instance().showShortMessage(mEt_accound, "注册失败，该账号已经存在...")
+                    }
+                    v2.succeeded()
+                }
+                .compile()
+
+        mRep.addUpdatable(this)
     }
 
 
     override fun update() {
+        Log.e("---", "----update----")
     }
+
+
 }

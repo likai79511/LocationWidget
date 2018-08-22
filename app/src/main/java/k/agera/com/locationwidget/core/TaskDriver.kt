@@ -24,7 +24,7 @@ class TaskDriver {
 
     val mMainHandler = Handler(Looper.getMainLooper())
 
-    private val mExecutor = Executors.newFixedThreadPool(maxParallelCount)
+    val mExecutor = Executors.newFixedThreadPool(maxParallelCount)
 
 
     fun execute(task: Runnable) {

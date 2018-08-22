@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "/Users/mac/Desktop/1/LocationWidget/agera/build/intermediates/res/merged/debug/anim-v21/design_bottom_sheet_slide_in.xml",
+        "source": "/Users/mac/Desktop/1/LocationWidget/agera/build/intermediates/exploded-aar/com.android.support/design/23.2.0/res/anim-v21/design_bottom_sheet_slide_in.xml"
+    },
+    {
+        "merged": "/Users/mac/Desktop/1/LocationWidget/agera/build/intermediates/res/merged/debug/anim-v21/design_bottom_sheet_slide_out.xml",
+        "source": "/Users/mac/Desktop/1/LocationWidget/agera/build/intermediates/exploded-aar/com.android.support/design/23.2.0/res/anim-v21/design_bottom_sheet_slide_out.xml"
+    }
+]

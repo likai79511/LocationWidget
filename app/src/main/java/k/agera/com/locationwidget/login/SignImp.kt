@@ -15,6 +15,12 @@ class SignImp : SignInter {
     var gson = Gson()
     lateinit var result: Result<String>
 
+    companion object {
+        var imp = SignImp()
+        fun instance() = imp
+    }
+
+
     override fun checkDataFormat(account: String, password: String): Result<Pair<String, String>> {
         if (account.length != 11)
             return Result.failure(Exception("无效的手机号"))

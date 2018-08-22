@@ -8,7 +8,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.IBinder
 import android.support.design.widget.Snackbar
-import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -104,14 +103,6 @@ class CommonUtils private constructor() {
     }
 
 
-    fun saveAccountInfo(account: String, password: String) = saveData(Constants.USERNAME, account) && saveData(Constants.PASSWORD, password)
-
-
-    fun checkTel(tel: String?): Boolean = !TextUtils.isEmpty(tel) && tel!!.length == 11
-
-    fun checkPassword(password: String?): Boolean = !TextUtils.isEmpty(password) && password!!.length >= 6
-
-    fun checkConfirmPassword(pass1: String, pass2: String): Boolean = !TextUtils.isEmpty(pass1) && !TextUtils.isEmpty(pass2) && pass1.equals(pass2)
 
     fun startDaemon() {
         var am = ctx.getSystemService(Context.ALARM_SERVICE) as AlarmManager
