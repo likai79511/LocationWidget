@@ -3,6 +3,7 @@ package k.agera.com.locationwidget.login
 import android.util.Log
 import com.google.android.agera.Result
 import com.google.gson.Gson
+import k.agera.com.locationwidget.bean.BombUserList
 import k.agera.com.locationwidget.bean.User
 import k.agera.com.locationwidget.network.Config
 import k.agera.com.locationwidget.network.NetCore
@@ -13,7 +14,7 @@ import k.agera.com.locationwidget.network.NetCore
 class SignImp : SignInter {
 
     var gson = Gson()
-    lateinit var result: Result<String>
+    var result = Result.failure<String>()
 
     companion object {
         var imp = SignImp()
@@ -33,12 +34,10 @@ class SignImp : SignInter {
         NetCore.instance().doPost(Config.userTable, Config.BombHeaders, gson.toJson(User(account, password)))
                 .ifSucceededSendTo {
                     var responseCode = it.responseCode
-                    if (responseCode !in 200..300) {
-                        result = Result.failure()
-                        return@ifSucceededSendTo
+                    if (responseCode in 200..300) {
+                        var data = it.bodyString.get()
+                        result = Result.success(data)
                     }
-                    var data = it.bodyString.get()
-                    result = Result.success(data)
                 }
                 .ifFailedSendTo {
                     Log.e("---", "---signUp appear error: ${it.message}")
@@ -48,17 +47,18 @@ class SignImp : SignInter {
     }
 
     override fun signIn(account: String, password: String): Result<String> {
-        NetCore.instance().doGet("${Config.userTable}?where{\"account\":\"$account\",\"password\":\"$password\"}", Config.BombHeaders)
+        NetCore.instance().doGet("${Config.userTable}?where={\"account\":\"$account\",\"password\":\"$password\"}", Config.BombHeaders)
                 .ifSucceededSendTo {
                     var responseCode = it.responseCode
-                    if (responseCode !in 200..300) {
-                        result = Result.failure()
-                        return@ifSucceededSendTo
+                    if (responseCode in 200..300) {
+                        var data = it.bodyString.get()
+                        Log.e("---", "---data:$data")
+                        var list = gson.fromJson<BombUserList>(data, BombUserList::class.java)
+                        list.results?.let {
+                            if (it.size > 0)
+                                result = Result.success("success")
+                        }
                     }
-                    var data = it.bodyString.get()
-                    Log.e("---","---data:$data")
-                    result = Result.failure()
-//                    result = Result.success(data)
                 }
                 .ifFailedSendTo {
                     Log.e("---", "---signUp appear error: ${it.message}")

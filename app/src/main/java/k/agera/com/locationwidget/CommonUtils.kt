@@ -6,11 +6,13 @@ import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
 import android.os.IBinder
 import android.support.design.widget.Snackbar
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import com.google.android.agera.Result
 import k.agera.com.locationwidget.core.TaskDriver
 import k.agera.com.locationwidget.push.PushImp
 import k.agera.com.locationwidget.utils.Constants
@@ -27,7 +29,7 @@ class CommonUtils private constructor() {
         fun instance() = instance
     }
 
-    fun showShortMessage(payload: View, message: String) {
+    fun showShortMessage(payload: View?, message: String) {
         TaskDriver.instance().mMainHandler.post {
             if (payload == null) {
                 Toast.makeText(MyApp.instance(), message, Toast.LENGTH_SHORT).show()
@@ -103,6 +105,14 @@ class CommonUtils private constructor() {
     }
 
 
+    fun checkNetworkAvailable(): Result<String> {
+        var cm: ConnectivityManager = MyApp.instance().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager ?: return Result.failure()
+        var netInfo = cm.activeNetworkInfo
+        if (netInfo == null || !netInfo.isAvailable)
+            return Result.failure()
+        return Result.success("")
+    }
+
 
     fun startDaemon() {
         var am = ctx.getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -115,6 +125,7 @@ class CommonUtils private constructor() {
         override fun onBind(intent: Intent?): IBinder {
             TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         }
+
         override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
             PushImp.instance().resumeService()
             return super.onStartCommand(intent, flags, startId)
