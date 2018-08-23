@@ -61,6 +61,14 @@ class SignInActivity : BaseActivity(), Updatable {
                 }
                 .orSkip()
                 .attemptGetFrom {
+                    var netInfo = CommonUtils.instance().checkNetworkAvailable()
+                    netInfo.ifFailedSendTo {
+                        CommonUtils.instance().showShortMessage(mEt_accound, "没有网络..")
+                    }
+                    netInfo
+                }
+                .orSkip()
+                .attemptGetFrom {
                     account = mEt_accound.text?.toString()
                     password = mEt_password.text?.toString()
 
@@ -83,7 +91,7 @@ class SignInActivity : BaseActivity(), Updatable {
                 }
                 .notifyIf { _, v2 ->
                     if (v2.failed()) {
-                        CommonUtils.instance().showShortMessage(mEt_accound, "注册失败，该账号已经存在...")
+                        CommonUtils.instance().showShortMessage(mEt_accound, "登陆失败，账号密码不匹配...")
                     }
                     v2.succeeded()
                 }
