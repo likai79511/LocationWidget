@@ -1,14 +1,18 @@
 package k.agera.com.locationwidget
 
+import android.content.Intent
+import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
+import android.widget.ImageView
 import com.google.android.agera.Repositories
 import com.google.android.agera.Result
 import com.google.android.agera.Updatable
 import k.agera.com.locationwidget.core.TaskDriver
 import k.agera.com.locationwidget.login.SignImp
+import k.agera.com.locationwidget.login.SignInActivity
 import k.agera.com.locationwidget.utils.Constants
 
 /**
@@ -16,15 +20,26 @@ import k.agera.com.locationwidget.utils.Constants
  */
 class SplashActivity : BaseActivity(), Updatable {
 
-    lateinit var mRoot: View
+    private lateinit var mRoot: View
+    private lateinit var mImg: ImageView
 
     var account = ""
     var password = ""
+    var startTime = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         mRoot = findViewById(R.id.root)
+        mImg = findViewById(R.id.img) as ImageView
+
+        startTime = System.currentTimeMillis()
+
+        var d: AnimatedVectorDrawable = resources.getDrawable(R.drawable.logo_anim_vector) as AnimatedVectorDrawable
+        d?.let {
+            mImg.setImageDrawable(it)
+            it.start()
+        }
         initEvents()
     }
 
@@ -66,11 +81,19 @@ class SplashActivity : BaseActivity(), Updatable {
     }
 
     override fun update() {
-        Log.e("---", "---update---")
+        var duration = System.currentTimeMillis() - startTime
+        mRoot.postDelayed({
+            startActivity(Intent(SplashActivity@this,MainActivity::class.java))
+            finish()
+        }, if (duration > 2_500) 0 else 2_500 - duration)
     }
 
 
     private fun gotoSignInPage() {
-        Log.e("---", "---gotoSignInPage---")
+        var duration = System.currentTimeMillis() - startTime
+        mRoot.postDelayed({
+            startActivity(Intent(SplashActivity@this,SignInActivity::class.java))
+            finish()
+        }, if (duration > 2_500) 0 else 2_500 - duration)
     }
 }
