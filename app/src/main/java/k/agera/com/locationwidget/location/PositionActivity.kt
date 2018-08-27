@@ -8,7 +8,6 @@ import com.google.android.agera.Updatable
 import k.agera.com.locationwidget.R
 import k.agera.com.locationwidget.adapter.PositionAdapter
 import k.agera.com.locationwidget.base.BaseActivity
-import k.agera.com.locationwidget.login.SignImp
 import k.agera.com.locationwidget.utils.RefreshListener
 
 /**
@@ -17,11 +16,11 @@ import k.agera.com.locationwidget.utils.RefreshListener
 class PositionActivity : BaseActivity(), Updatable {
 
 
-    lateinit var mRv: RecyclerView
-    lateinit var mSwipe: SwipeRefreshLayout
-    var mAdapter = PositionAdapter()
+    private lateinit var mRv: RecyclerView
+    private lateinit var mSwipe: SwipeRefreshLayout
+    private var mAdapter = PositionAdapter()
 
-    var mRefreshListener = RefreshListener()
+    private var mRefreshListener = RefreshListener()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,7 +46,7 @@ class PositionActivity : BaseActivity(), Updatable {
         Repositories.repositoryWithInitialValue("")
                 .observe(mRefreshListener)
                 .onUpdatesPerLoop()
-                .attemptGetFrom{
+                .attemptGetFrom {
                 }
     }
 
