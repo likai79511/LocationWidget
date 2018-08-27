@@ -10,3 +10,4 @@
 .externalNativeBuild
 ./agera/build
 ./App/build
+agera/build
