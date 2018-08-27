@@ -11,8 +11,11 @@ import com.google.android.agera.Repository
 import com.google.android.agera.Result
 import com.google.android.agera.Updatable
 import k.agera.com.locationwidget.*
+import k.agera.com.locationwidget.base.BaseActivity
+import k.agera.com.locationwidget.base.MainActivity
 import k.agera.com.locationwidget.core.TaskDriver
 import k.agera.com.locationwidget.utils.ClickObservable
+import k.agera.com.locationwidget.utils.CommonUtils
 import k.agera.com.locationwidget.utils.Constants
 
 /**
@@ -107,6 +110,7 @@ class SignInActivity : BaseActivity(), Updatable {
         CommonUtils.instance().saveData(Constants.PASSWORD, password)
         //set alias to jpush
         JPushInterface.setAlias(MyApp.instance(), 0, account)
+        MyApp.instance().selfAlias = account!!
         //turn to home page
         startActivity(Intent(this, MainActivity::class.java))
         finish()

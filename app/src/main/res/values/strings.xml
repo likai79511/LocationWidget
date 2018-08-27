@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Location</string>
+
+    <string name="add_friend">add friend</string>
 </resources>

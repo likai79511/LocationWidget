@@ -9,8 +9,8 @@ import com.google.android.agera.Repositories
 import com.google.android.agera.Repository
 import com.google.android.agera.Result
 import com.google.android.agera.Updatable
-import k.agera.com.locationwidget.BaseActivity
-import k.agera.com.locationwidget.CommonUtils
+import k.agera.com.locationwidget.base.BaseActivity
+import k.agera.com.locationwidget.utils.CommonUtils
 import k.agera.com.locationwidget.MyApp
 import k.agera.com.locationwidget.R
 import k.agera.com.locationwidget.core.TaskDriver

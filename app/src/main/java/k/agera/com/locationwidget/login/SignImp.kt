@@ -31,12 +31,14 @@ class SignImp : SignInter {
     }
 
     override fun signUp(account: String, password: String): Result<String> {
-        NetCore.instance().doPost(Config.userTable, Config.BombHeaders, gson.toJson(User(account, password)))
+        NetCore.instance().doPost(Config.userTable, Config.BombHeaders, gson.toJson(User(account, password, "")))
                 .ifSucceededSendTo {
                     var responseCode = it.responseCode
                     if (responseCode in 200..300) {
                         var data = it.bodyString.get()
                         result = Result.success(data)
+                    }else{
+                        result = Result.failure()
                     }
                 }
                 .ifFailedSendTo {
@@ -57,6 +59,8 @@ class SignImp : SignInter {
                         list.results?.let {
                             if (it.size > 0)
                                 result = Result.success("success")
+                            else
+                                result = Result.failure()
                         }
                     }
                 }

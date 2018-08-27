@@ -14,7 +14,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SplashActivity">
+        <activity android:name=".base.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -30,11 +30,14 @@
             android:name=".login.SignInActivity"
             android:windowSoftInputMode="adjustPan" />
 
-        <activity android:name=".MainActivity" />
+        <activity android:name=".base.MainActivity" />
+
+        <activity android:name=".location.PositionActivity" />
+
 
         <!--App Deamon-->
-        <service android:name=".CommonUtils$DaemonService" />
-        <receiver android:name=".CommonUtils$BootReceiver">
+        <service android:name=".utils.CommonUtils$DaemonService" />
+        <receiver android:name=".utils.CommonUtils$BootReceiver">
             <intent-filter>
                 <action android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
             </intent-filter>

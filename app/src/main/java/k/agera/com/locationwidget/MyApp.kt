@@ -2,12 +2,15 @@ package k.agera.com.locationwidget
 
 import android.app.Application
 import cn.jpush.android.api.JPushInterface
+import k.agera.com.locationwidget.utils.CommonUtils
 
 /**
  * Created by Agera on 2018/6/13.
  */
 class MyApp : Application() {
 
+
+    var selfAlias:String = ""
 
     override fun onCreate() {
         super.onCreate()
