@@ -3,10 +3,12 @@ package k.agera.com.locationwidget.location
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.RecyclerView
+import com.google.android.agera.Repositories
 import com.google.android.agera.Updatable
 import k.agera.com.locationwidget.R
 import k.agera.com.locationwidget.adapter.PositionAdapter
 import k.agera.com.locationwidget.base.BaseActivity
+import k.agera.com.locationwidget.login.SignImp
 import k.agera.com.locationwidget.utils.RefreshListener
 
 /**
@@ -31,21 +33,27 @@ class PositionActivity : BaseActivity(), Updatable {
         mRv.adapter = mAdapter
         mSwipe.setOnRefreshListener(mRefreshListener)
 
+        mSwipe.post {
+            mSwipe.isRefreshing = true
+        }
+
         initEvents()
+
 
     }
 
 
     fun initEvents() {
-//        Repositories.repositoryWithInitialValue("")
-//                .observe(mRefreshListener)
-//                .onUpdatesPerLoop()
-//                .
+        Repositories.repositoryWithInitialValue("")
+                .observe(mRefreshListener)
+                .onUpdatesPerLoop()
+                .attemptGetFrom{
+                }
     }
 
 
     //do remove/add action when server response is ok
     override fun update() {
-
+        mSwipe.isRefreshing = false
     }
 }

@@ -10,7 +10,7 @@ class PositionImp:PositionInter {
 
 
     override fun getFriends(): Result<ArrayList<Friend>> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
 
