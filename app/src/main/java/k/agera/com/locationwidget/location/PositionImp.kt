@@ -3,17 +3,26 @@ package k.agera.com.locationwidget.location
 import android.util.Log
 import com.google.android.agera.Result
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import k.agera.com.locationwidget.MyApp
 import k.agera.com.locationwidget.bean.BombUserList
 import k.agera.com.locationwidget.bean.Friend
 import k.agera.com.locationwidget.network.Config
 import k.agera.com.locationwidget.network.NetCore
+import k.agera.com.locationwidget.utils.AppendList
 
 /**
  * Created by Agera on 2018/8/27.
  */
 class PositionImp : PositionInter {
     private var gson = Gson()
+
+    companion object {
+        private var imp = PositionImp()
+        fun instance() = imp
+    }
+
+
     override fun getFriends(): Result<ArrayList<Friend>> {
         var result = Result.failure<ArrayList<Friend>>()
         NetCore.instance().doGet("${Config.userTable}?where={\"account\":\"${MyApp.instance().selfAlias}\"}", Config.BombHeaders)
@@ -31,7 +40,10 @@ class PositionImp : PositionInter {
                                 } else {
                                     var friends = it[0].friends
                                     if (null == friends || friends.isEmpty()) {
-
+                                        result = Result.success(AppendList<Friend>().compile())
+                                    } else {
+                                        result = Result.success(gson.fromJson(friends, object : TypeToken<ArrayList<Friend>>() {
+                                        }.type))
                                     }
 
                                 }

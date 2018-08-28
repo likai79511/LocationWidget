@@ -8,6 +8,7 @@ import com.google.android.agera.Updatable
 import k.agera.com.locationwidget.R
 import k.agera.com.locationwidget.adapter.PositionAdapter
 import k.agera.com.locationwidget.base.BaseActivity
+import k.agera.com.locationwidget.core.TaskDriver
 import k.agera.com.locationwidget.utils.RefreshListener
 
 /**
@@ -46,13 +47,28 @@ class PositionActivity : BaseActivity(), Updatable {
         Repositories.repositoryWithInitialValue("")
                 .observe(mRefreshListener)
                 .onUpdatesPerLoop()
-                .attemptGetFrom {
+                .goTo(TaskDriver.instance().mExecutor)
+                .typedResult(String::class.java)
+                .transform {
+                    PositionImp.instance().getFriends()
                 }
+                .goTo(TaskDriver.instance().mMainExecutor)
+                .attemptTransform {
+                    
+
+                }
+
     }
 
 
     //do remove/add action when server response is ok
     override fun update() {
         mSwipe.isRefreshing = false
+    }
+
+    fun closeRefresh() {
+        mSwipe.post {
+            mSwipe.isRefreshing = false
+        }
     }
 }

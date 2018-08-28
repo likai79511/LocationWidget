@@ -3,6 +3,7 @@ package k.agera.com.locationwidget.core
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 import java.util.concurrent.Semaphore
 
@@ -25,6 +26,10 @@ class TaskDriver {
     val mMainHandler = Handler(Looper.getMainLooper())
 
     val mExecutor = Executors.newFixedThreadPool(maxParallelCount)
+
+    val mMainExecutor = Executor{
+        mMainHandler.post(it)
+    }
 
 
     fun execute(task: Runnable) {
