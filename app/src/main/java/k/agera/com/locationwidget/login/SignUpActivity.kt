@@ -14,7 +14,7 @@ import k.agera.com.locationwidget.utils.CommonUtils
 import k.agera.com.locationwidget.MyApp
 import k.agera.com.locationwidget.R
 import k.agera.com.locationwidget.core.TaskDriver
-import k.agera.com.locationwidget.utils.ClickObservable
+import k.agera.com.locationwidget.observable.ClickObservable
 
 /**
  * Created by Agera on 2018/8/21.

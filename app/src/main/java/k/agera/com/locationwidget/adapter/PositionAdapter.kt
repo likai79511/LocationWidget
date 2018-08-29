@@ -6,18 +6,19 @@ import android.view.ViewGroup
 import android.widget.TextView
 import k.agera.com.locationwidget.MyApp
 import k.agera.com.locationwidget.R
-import k.agera.com.locationwidget.bean.Friend
 import k.agera.com.locationwidget.utils.AppendList
+import k.agera.com.locationwidget.utils.AppendMap
 
 /**
  * Created by Agera on 2018/8/27.
  */
 class PositionAdapter : RecyclerView.Adapter<PositionAdapter.VH>() {
 
-    var userList = AppendList<Friend>().add(Friend(MyApp.instance().selfAlias, "自己")).compile()
+    var userList:Map<String,String> = AppendMap<String,String>().put(MyApp.instance().selfAlias, "自己").compile()
+
 
     override fun onBindViewHolder(holder: VH?, position: Int) {
-        holder?.tv?.text = userList[position].tel + " [${userList[position].nickname}]"
+
     }
 
     override fun getItemCount(): Int {
@@ -34,11 +35,11 @@ class PositionAdapter : RecyclerView.Adapter<PositionAdapter.VH>() {
 
     }
 
-    fun addFriend(friend: Friend) {
+    fun addFriend(friend: String) {
         userList.add(friend)
     }
 
-    fun removeFriend(friend: Friend) {
+    fun removeFriend(friend: String) {
         userList.remove(friend)
     }
 

@@ -14,7 +14,7 @@ import k.agera.com.locationwidget.*
 import k.agera.com.locationwidget.base.BaseActivity
 import k.agera.com.locationwidget.base.MainActivity
 import k.agera.com.locationwidget.core.TaskDriver
-import k.agera.com.locationwidget.utils.ClickObservable
+import k.agera.com.locationwidget.observable.ClickObservable
 import k.agera.com.locationwidget.utils.CommonUtils
 import k.agera.com.locationwidget.utils.Constants
 

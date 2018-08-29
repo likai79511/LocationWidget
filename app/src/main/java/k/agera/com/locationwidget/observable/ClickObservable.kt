@@ -1,4 +1,4 @@
-package k.agera.com.locationwidget.utils
+package k.agera.com.locationwidget.observable
 
 import android.view.View
 import com.google.android.agera.BaseObservable

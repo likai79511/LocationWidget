@@ -13,6 +13,10 @@ open class BaseActivity : AppCompatActivity() {
     inline fun <F : RepositoryCompilerStates.RFlow<*, *, *>, T> F.typedResult(value: Class<T>): RepositoryCompilerStates.RFlow<Result<T>, *, *>
             = this as RepositoryCompilerStates.RFlow<Result<T>, *, *>
 
+
+    inline fun <F : RepositoryCompilerStates.RFlow<*, *, *>, T> F.typedValue(value: Class<T>): RepositoryCompilerStates.RFlow<T, T, *>
+            = this as RepositoryCompilerStates.RFlow<T, T, *>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

@@ -3,13 +3,11 @@ package k.agera.com.locationwidget.location
 import android.util.Log
 import com.google.android.agera.Result
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import k.agera.com.locationwidget.MyApp
 import k.agera.com.locationwidget.bean.BombUserList
-import k.agera.com.locationwidget.bean.Friend
 import k.agera.com.locationwidget.network.Config
 import k.agera.com.locationwidget.network.NetCore
-import k.agera.com.locationwidget.utils.AppendList
+import k.agera.com.locationwidget.utils.AppendMap
 
 /**
  * Created by Agera on 2018/8/27.
@@ -23,8 +21,8 @@ class PositionImp : PositionInter {
     }
 
 
-    override fun getFriends(): Result<ArrayList<Friend>> {
-        var result = Result.failure<ArrayList<Friend>>()
+    override fun getFriends(): Result<String> {
+        var result = Result.failure<String>()
         NetCore.instance().doGet("${Config.userTable}?where={\"account\":\"${MyApp.instance().selfAlias}\"}", Config.BombHeaders)
                 .ifSucceededSendTo {
                     try {
@@ -32,22 +30,11 @@ class PositionImp : PositionInter {
                         if (responseCode in 200..300) {
                             var data = it.bodyString.get()
                             Log.e("---", "---data:$data")
-                            var list = gson.fromJson<BombUserList>(data, BombUserList::class.java)
-
-                            list.results?.let {
-                                if (it.size == 0) {
-                                    result = Result.failure()
-                                } else {
-                                    var friends = it[0].friends
-                                    if (null == friends || friends.isEmpty()) {
-                                        result = Result.success(AppendList<Friend>().compile())
-                                    } else {
-                                        result = Result.success(gson.fromJson(friends, object : TypeToken<ArrayList<Friend>>() {
-                                        }.type))
-                                    }
-
-                                }
-                            }
+                            var friends = gson.fromJson<BombUserList>(data, BombUserList::class.java).results[0].friends
+                            if (friends == null || friends.isEmpty())
+                                result = Result.failure<String>()
+                            else
+                                result = Result.success(friends)
                         }
                     } catch (e: Exception) {
                         Log.e("---", "--appear error:${e.message}")
@@ -61,5 +48,18 @@ class PositionImp : PositionInter {
         return result
     }
 
+
+    fun parseFriends(friends: String): HashMap<String, String> {
+        var map = AppendMap<String, String>()
+        try {
+            var friendsArray = friends.split(",")
+            friendsArray.forEach {
+                map.put(it.split("-")[0], it.split("-")[1])
+            }
+        } catch (e: Exception) {
+            Log.e("---", "---parseFriends appear error:${e.message}")
+        }
+        return map.compile()
+    }
 
 }
