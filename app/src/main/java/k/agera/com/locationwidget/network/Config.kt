@@ -21,7 +21,7 @@ class Config {
                 .compile()
 
 
-        val userTable = "https://api.bmob.cn/1/classes/user"
+        val userTable = "https://api2.bmob.cn/1/classes/user"
 
     }
 

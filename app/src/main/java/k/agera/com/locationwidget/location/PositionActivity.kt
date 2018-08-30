@@ -2,6 +2,7 @@ package k.agera.com.locationwidget.location
 
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import com.google.android.agera.Repositories
@@ -25,7 +26,14 @@ class PositionActivity : BaseActivity(), Updatable {
     private lateinit var mSwipe: SwipeRefreshLayout
     private var mAdapter = PositionAdapter()
 
-    private var mRefreshListener = RefreshObservable()
+    var startShowRefreshIndicator = 0L
+
+    private var mRefreshListener = object : RefreshObservable() {
+        override fun onRefresh() {
+            super.onRefresh()
+            startShowRefreshIndicator = System.currentTimeMillis()
+        }
+    }
 
     private var mFriends = AppendMap<String, String>()
 
@@ -39,21 +47,18 @@ class PositionActivity : BaseActivity(), Updatable {
 
         mRv = findViewById(R.id.lv) as RecyclerView
         mSwipe = findViewById(R.id.swipe) as SwipeRefreshLayout
+        mSwipe.setColorSchemeResources(R.color.colorAccent, R.color.colorPrimary, R.color.colorPrimaryDark)
+        mRv.layoutManager = LinearLayoutManager(this)
         mRv.adapter = mAdapter
         mSwipe.setOnRefreshListener(mRefreshListener)
 
-        mSwipe.post {
-            mSwipe.isRefreshing = true
-        }
-
+        startToRefresh()
         initEvents()
-
-
     }
 
 
     private fun initEvents() {
-        mRefresh_repo = Repositories.repositoryWithInitialValue("")
+        mRefresh_repo = Repositories.repositoryWithInitialValue(Result.absent<String>())
                 .observe(mRefreshListener)
                 .onUpdatesPerLoop()
                 .goTo(TaskDriver.instance().mExecutor)
@@ -69,24 +74,31 @@ class PositionActivity : BaseActivity(), Updatable {
                     v2.succeeded()
                 }
                 .compile()
-
         mRefresh_repo.addUpdatable(this)
-
     }
 
 
     //do remove/add action when server response is ok
     override fun update() {
 
-//        mSwipe.isRefreshing = false
+        closeRefresh()
         var friends = mRefresh_repo.get().get()
+        mAdapter.setFriendList(friends)
         Log.e("---", "---friends:" + friends)
 
     }
 
-    fun closeRefresh() {
-        mSwipe.post {
+    private fun closeRefresh() {
+        var duration = System.currentTimeMillis() - startShowRefreshIndicator
+        mSwipe.postDelayed({
             mSwipe.isRefreshing = false
+        }, if (duration >= 2_500) 0 else 2_500 - duration)
+    }
+
+    private fun startToRefresh() {
+        startShowRefreshIndicator = System.currentTimeMillis()
+        mSwipe.post {
+            mSwipe.isRefreshing = true
         }
     }
 }

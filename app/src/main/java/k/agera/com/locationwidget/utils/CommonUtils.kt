@@ -10,6 +10,7 @@ import android.net.ConnectivityManager
 import android.os.IBinder
 import android.support.design.widget.Snackbar
 import android.util.Log
+import android.util.TypedValue
 import android.view.View
 import android.widget.Toast
 import com.google.android.agera.Result
@@ -112,6 +113,9 @@ class CommonUtils private constructor() {
             return Result.failure()
         return Result.success("")
     }
+
+
+    fun dp2px(dp: Float): Int = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, MyApp.instance().resources.displayMetrics).toInt()
 
 
     fun startDaemon() {

@@ -6,7 +6,7 @@ import com.google.android.agera.BaseObservable
 /**
  * Created by Agera on 2018/8/27.
  */
-class RefreshObservable :SwipeRefreshLayout.OnRefreshListener,BaseObservable() {
+open class RefreshObservable :SwipeRefreshLayout.OnRefreshListener,BaseObservable() {
     override fun onRefresh() {
         dispatchUpdate()
     }

@@ -31,10 +31,11 @@ class PositionImp : PositionInter {
                             var data = it.bodyString.get()
                             Log.e("---", "---data:$data")
                             var friends = gson.fromJson<BombUserList>(data, BombUserList::class.java).results[0].friends
-                            if (friends == null || friends.isEmpty())
-                                result = Result.failure<String>()
+                            if (friends == null)
+                                result = Result.failure<String>(Exception("friends is empty"))
                             else
                                 result = Result.success(friends)
+
                         }
                     } catch (e: Exception) {
                         Log.e("---", "--appear error:${e.message}")
