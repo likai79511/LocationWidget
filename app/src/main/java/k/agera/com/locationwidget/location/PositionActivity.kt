@@ -52,7 +52,7 @@ class PositionActivity : BaseActivity(), Updatable {
     }
 
 
-    fun initEvents() {
+    private fun initEvents() {
         mRefresh_repo = Repositories.repositoryWithInitialValue("")
                 .observe(mRefreshListener)
                 .onUpdatesPerLoop()
@@ -77,6 +77,7 @@ class PositionActivity : BaseActivity(), Updatable {
 
     //do remove/add action when server response is ok
     override fun update() {
+
 //        mSwipe.isRefreshing = false
         var friends = mRefresh_repo.get().get()
         Log.e("---", "---friends:" + friends)

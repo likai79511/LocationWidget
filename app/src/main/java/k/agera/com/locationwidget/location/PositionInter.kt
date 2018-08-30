@@ -7,7 +7,10 @@ import com.google.android.agera.Result
  */
 interface PositionInter {
 
+    // get friends list
     fun getFriends():Result<String>
 
 
+    //check friend had added or if exist in server
+    fun checkIfExist(tel: String, nickName: String, friends: ArrayList<String>):Result<String>
 }

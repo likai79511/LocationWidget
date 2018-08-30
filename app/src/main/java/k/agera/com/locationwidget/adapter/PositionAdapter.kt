@@ -7,18 +7,18 @@ import android.widget.TextView
 import k.agera.com.locationwidget.MyApp
 import k.agera.com.locationwidget.R
 import k.agera.com.locationwidget.utils.AppendList
-import k.agera.com.locationwidget.utils.AppendMap
 
 /**
  * Created by Agera on 2018/8/27.
  */
 class PositionAdapter : RecyclerView.Adapter<PositionAdapter.VH>() {
 
-    var userList:Map<String,String> = AppendMap<String,String>().put(MyApp.instance().selfAlias, "自己").compile()
+    var userList:ArrayList<String> = AppendList<String>().add("${MyApp.instance().selfAlias}-自己").compile()
 
 
     override fun onBindViewHolder(holder: VH?, position: Int) {
-
+        var userInfo = userList[position].split("-")
+        holder?.tv?.text = "${userInfo[0]} [${userInfo[1]}]"
     }
 
     override fun getItemCount(): Int {

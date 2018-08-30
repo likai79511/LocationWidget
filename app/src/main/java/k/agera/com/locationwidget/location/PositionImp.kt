@@ -62,4 +62,39 @@ class PositionImp : PositionInter {
         return map.compile()
     }
 
+    override fun checkIfExist(tel: String, nickName: String, friends: ArrayList<String>): Result<String> {
+        var result = Result.failure<String>()
+        if (friends.size > 0) {
+            friends.forEach {
+                if (tel.equals(it.split("-")[0])) {
+                    result = Result.failure(Exception("你已经添加过了该好友."))
+                    return result
+                }
+            }
+        }
+
+        //check if exist in server db
+        NetCore.instance().doGet("${Config.userTable}?where={\"account\":\"$tel\"}", Config.BombHeaders)
+                .ifSucceededSendTo {
+                    var responseCode = it.responseCode
+                    if (responseCode in 200..300) {
+                        var data = it.bodyString.get()
+                        Log.e("---", "---data:$data")
+                        var list = gson.fromJson<BombUserList>(data, BombUserList::class.java)
+                        list.results?.let {
+                            if (it.size > 0)
+                                result = Result.success("success")
+                            else
+                                result = Result.failure(Exception("该用户不存在."))
+                        }
+                    }
+
+                }
+                .ifFailedSendTo {
+                    result = Result.failure(Exception("服务器异常,请稍后重试."))
+                }
+
+        return result
+    }
+
 }

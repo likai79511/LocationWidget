@@ -37,7 +37,7 @@ class SplashActivity : BaseActivity(), Updatable {
 
         startTime = System.currentTimeMillis()
 
-        var d: AnimatedVectorDrawable = resources.getDrawable(R.drawable.logo_anim_vector) as AnimatedVectorDrawable
+        var d: AnimatedVectorDrawable = getDrawable(R.drawable.logo_anim_vector) as AnimatedVectorDrawable
         d?.let {
             mImg.setImageDrawable(it)
             it.start()
