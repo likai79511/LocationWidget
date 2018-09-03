@@ -8,7 +8,7 @@ import com.google.android.agera.Result
 interface PositionInter {
 
     // get friends list
-    fun getFriends():Result<String>
+    fun getFriends(): Result<String>
 
 
     /**
@@ -16,8 +16,9 @@ interface PositionInter {
      * Result.failed() is user not exist in server
      * Result.succee() is user exist in server
      */
-    fun checkIfExist(tel: String,friends: ArrayList<String>?):Result<String>
+    fun checkIfExist(tel: String, friends: ArrayList<String>?): Result<String>
 
 
+    fun setFriendsInServer(friends: String): Result<String>
 
 }

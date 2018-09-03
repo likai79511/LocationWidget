@@ -13,6 +13,7 @@ import k.agera.com.locationwidget.utils.AppendMap
  * Created by Agera on 2018/8/27.
  */
 class PositionImp : PositionInter {
+
     private var gson = Gson()
 
     companion object {
@@ -97,5 +98,8 @@ class PositionImp : PositionInter {
         return result
     }
 
-
+    override fun setFriendsInServer(friends: String): Result<String> {
+        var result = Result.absent<String>()
+        return result
+    }
 }

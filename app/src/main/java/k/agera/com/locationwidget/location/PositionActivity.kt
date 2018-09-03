@@ -87,6 +87,7 @@ class PositionActivity : BaseActivity(), Updatable {
                 .attemptGetFrom { skipFirstIn }
                 .orSkip()
                 .goTo(TaskDriver.instance().mMainExecutor)
+                .typedResult(String::class.java)
                 .attemptGetFrom {
                     var result = CommonUtils.instance().checkNetworkAvailable()
                     CommonUtils.instance().showShortMessage(mRv, "没有网络连接...")
@@ -100,15 +101,27 @@ class PositionActivity : BaseActivity(), Updatable {
                     result
                 }
                 .orSkip()
-                .attemptGetFrom{
+                .attemptGetFrom {
                     PositionImp.instance().getFriends()
                 }
                 .orSkip()
                 .transform {
-                    var friends = it
-
+                    var friends = if (it == null || it.isEmpty()) {
+                        "$friend_tel-$friend_nickname"
+                    } else {
+                        "$it,$friend_tel-$friend_nickname"
+                    }
+                    friends
                 }
+                .thenTransform {
+                    PositionImp.instance().setFriendsInServer(it)
+                }
+                .notifyIf { _, v2 ->
+                    if (v2.failed()) {
 
+                    }
+                    v2.succeeded()
+                }
                 .compile()
 
         mRefresh_repo = Repositories.repositoryWithInitialValue(Result.absent<String>())
