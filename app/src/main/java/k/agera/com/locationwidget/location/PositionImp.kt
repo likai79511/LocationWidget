@@ -1,7 +1,5 @@
 package k.agera.com.locationwidget.location
 
-import android.app.AlertDialog
-import android.content.Context
 import android.util.Log
 import com.google.android.agera.Result
 import com.google.gson.Gson
@@ -65,9 +63,9 @@ class PositionImp : PositionInter {
         return map.compile()
     }
 
-    override fun checkIfExist(tel: String, nickName: String, friends: ArrayList<String>): Result<String> {
+    override fun checkIfExist(tel: String, friends: ArrayList<String>?): Result<String> {
         var result = Result.failure<String>()
-        if (friends.size > 0) {
+        if (friends != null && friends.size > 0) {
             friends.forEach {
                 if (tel.equals(it.split("-")[0])) {
                     result = Result.failure(Exception("你已经添加过了该好友."))
@@ -86,12 +84,11 @@ class PositionImp : PositionInter {
                         var list = gson.fromJson<BombUserList>(data, BombUserList::class.java)
                         list.results?.let {
                             if (it.size > 0)
-                                result = Result.success("success")
+                                result = Result.success("该用户存在.")
                             else
                                 result = Result.failure(Exception("该用户不存在."))
                         }
                     }
-
                 }
                 .ifFailedSendTo {
                     result = Result.failure(Exception("服务器异常,请稍后重试."))
@@ -99,8 +96,6 @@ class PositionImp : PositionInter {
 
         return result
     }
-
-
 
 
 }

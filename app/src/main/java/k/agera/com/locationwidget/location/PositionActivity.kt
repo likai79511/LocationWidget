@@ -18,7 +18,6 @@ import k.agera.com.locationwidget.base.BaseActivity
 import k.agera.com.locationwidget.core.TaskDriver
 import k.agera.com.locationwidget.observable.OperationObservable
 import k.agera.com.locationwidget.observable.RefreshObservable
-import k.agera.com.locationwidget.utils.AppendMap
 import k.agera.com.locationwidget.utils.CommonUtils
 
 /**
@@ -48,7 +47,7 @@ class PositionActivity : BaseActivity(), Updatable {
         }
     }
 
-    private var mFriends = AppendMap<String, String>()
+    private var mFriends = ArrayList<String>()
 
 
     private lateinit var mRefresh_repo: Repository<Result<String>>
@@ -62,7 +61,7 @@ class PositionActivity : BaseActivity(), Updatable {
     private var friend_tel: String? = null
     private var friend_nickname: String? = null
 
-    private var skipFirstIn = false
+    private var skipFirstIn = Result.failure<String>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,7 +84,32 @@ class PositionActivity : BaseActivity(), Updatable {
         mFriendManager = Repositories.repositoryWithInitialValue(Result.absent<String>())
                 .observe(OperationObserveable)
                 .onUpdatesPerLoop()
-                .;
+                .attemptGetFrom { skipFirstIn }
+                .orSkip()
+                .goTo(TaskDriver.instance().mMainExecutor)
+                .attemptGetFrom {
+                    var result = CommonUtils.instance().checkNetworkAvailable()
+                    CommonUtils.instance().showShortMessage(mRv, "没有网络连接...")
+                    result
+                }
+                .orSkip()
+                .attemptGetFrom {
+                    var result = PositionImp.instance().checkIfExist(friend_tel!!, mFriends)
+                    if (result.failed())
+                        CommonUtils.instance().showShortMessage(mRv, result.failure.message!!)
+                    result
+                }
+                .orSkip()
+                .attemptGetFrom{
+                    PositionImp.instance().getFriends()
+                }
+                .orSkip()
+                .transform {
+                    var friends = it
+
+                }
+
+                .compile()
 
         mRefresh_repo = Repositories.repositoryWithInitialValue(Result.absent<String>())
                 .observe(mRefreshListener, mFriendManager)
@@ -120,10 +144,9 @@ class PositionActivity : BaseActivity(), Updatable {
             closeRefresh()
             var friends = mRefresh_repo.get().get()
             mAdapter.setFriendList(friends)
+            mFriends = mAdapter.getFriendList()
             Log.e("---", "---friends:" + friends)
         }
-
-
     }
 
     private fun closeRefresh() {
@@ -158,7 +181,7 @@ class PositionActivity : BaseActivity(), Updatable {
                 CommonUtils.instance().showShortMessage(mRv, "备注／昵称  不得大于7个字符")
                 return@setPositiveButton
             }
-
+            skipFirstIn = Result.success("")
             mState = Operation.ADD
             startToRefresh()
             OperationObserveable.onClick()

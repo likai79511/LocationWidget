@@ -66,4 +66,6 @@ class PositionAdapter : RecyclerView.Adapter<PositionAdapter.VH>() {
         userList.clear()
         userList.add("${MyApp.instance().selfAlias}-自己")
     }
+
+    fun getFriendList() = userList
 }
