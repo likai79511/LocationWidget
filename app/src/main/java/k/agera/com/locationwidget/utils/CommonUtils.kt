@@ -1,17 +1,21 @@
 package k.agera.com.locationwidget.utils
 
 import android.app.AlarmManager
+import android.app.AlertDialog
 import android.app.PendingIntent
 import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.graphics.Point
 import android.net.ConnectivityManager
 import android.os.IBinder
 import android.support.design.widget.Snackbar
 import android.util.Log
 import android.util.TypedValue
 import android.view.View
+import android.view.WindowManager
+import android.widget.LinearLayout
 import android.widget.Toast
 import com.google.android.agera.Result
 import k.agera.com.locationwidget.MyApp
@@ -105,6 +109,13 @@ class CommonUtils private constructor() {
         return true
     }
 
+    fun getScreenSize(ctx: Context): Pair<Int, Int> {
+        var wm = ctx.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        var display = wm.defaultDisplay
+        var point = Point()
+        display.getSize(point)
+        return Pair<Int, Int>(point.x, point.y)
+    }
 
     fun checkNetworkAvailable(): Result<String> {
         var cm: ConnectivityManager = MyApp.instance().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager ?: return Result.failure()
@@ -115,8 +126,30 @@ class CommonUtils private constructor() {
     }
 
 
+    fun checkTelephone(tel: String?): Boolean {
+        if (tel == null)
+            return false
+        return tel.trim().length == 11
+    }
+
+    fun checkNickName(nickName: String?): Boolean {
+        if (nickName == null)
+            return false
+        return nickName.trim().length <= 7
+    }
+
+
     fun dp2px(dp: Float): Int = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, MyApp.instance().resources.displayMetrics).toInt()
 
+
+    fun makeDialog(ctx: Context, content: View): AlertDialog.Builder {
+        var ad = AlertDialog.Builder(ctx)
+        var screenSize = getScreenSize(ctx)
+        ad.setCancelable(false)
+        content.layoutParams = LinearLayout.LayoutParams((screenSize.first * 0.8).toInt(), (screenSize.second * 0.4).toInt())
+        ad.setView(content)
+        return ad
+    }
 
     fun startDaemon() {
         var am = ctx.getSystemService(Context.ALARM_SERVICE) as AlarmManager

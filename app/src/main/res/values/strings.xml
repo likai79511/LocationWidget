@@ -1,5 +1,13 @@
 <resources>
     <string name="app_name">Location</string>
 
-    <string name="add_friend">add friend</string>
+    <string name="add_friend">添加朋友</string>
+
+    <string name="telephone">手机号码</string>
+
+    <string name="nickname">备注／昵称</string>
+
+    <string name="cancel">取消</string>
+
+    <string name="ok">确认</string>
 </resources>

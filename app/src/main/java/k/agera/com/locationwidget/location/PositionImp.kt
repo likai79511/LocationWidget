@@ -1,5 +1,7 @@
 package k.agera.com.locationwidget.location
 
+import android.app.AlertDialog
+import android.content.Context
 import android.util.Log
 import com.google.android.agera.Result
 import com.google.gson.Gson
@@ -97,5 +99,8 @@ class PositionImp : PositionInter {
 
         return result
     }
+
+
+
 
 }

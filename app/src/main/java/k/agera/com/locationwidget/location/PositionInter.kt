@@ -13,4 +13,5 @@ interface PositionInter {
 
     //check friend had added or if exist in server
     fun checkIfExist(tel: String, nickName: String, friends: ArrayList<String>):Result<String>
+
 }
