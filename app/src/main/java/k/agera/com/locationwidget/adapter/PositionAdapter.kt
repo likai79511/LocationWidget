@@ -42,9 +42,7 @@ class PositionAdapter : RecyclerView.Adapter<PositionAdapter.VH>() {
         var tv: TextView = contentView.findViewById(R.id.tv) as TextView
     }
 
-    fun addFriend(friend: String) {
 
-    }
 
     fun removeFriend(friend: String) {
         userList.remove(friend)

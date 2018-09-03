@@ -99,7 +99,30 @@ class PositionImp : PositionInter {
     }
 
     override fun setFriendsInServer(friends: String): Result<String> {
-        var result = Result.absent<String>()
+        var result = Result.failure<String>()
+        NetCore.instance().doGet("${Config.userTable}?where={\"account\":\"${MyApp.instance().selfAlias}\"}", Config.BombHeaders)
+                .ifSucceededSendTo {
+                    try {
+                        var responseCode = it.responseCode
+                        if (responseCode in 200..300) {
+                            var data = it.bodyString.get()
+                            Log.e("---", "---data:$data")
+                            var friends = gson.fromJson<BombUserList>(data, BombUserList::class.java).results[0].friends
+                            if (friends == null)
+                                result = Result.failure<String>(Exception("friends is empty"))
+                            else
+                                result = Result.success(friends)
+
+                        }
+                    } catch (e: Exception) {
+                        Log.e("---", "--appear error:${e.message}")
+                        result = Result.failure()
+                    }
+                }
+                .ifFailedSendTo {
+                    Log.e("---", "---signUp appear error: ${it.message}")
+                    result = Result.failure()
+                }
         return result
     }
 }
