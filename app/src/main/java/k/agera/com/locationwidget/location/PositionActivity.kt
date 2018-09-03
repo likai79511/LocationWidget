@@ -53,7 +53,9 @@ class PositionActivity : BaseActivity(), Updatable {
         mSwipe.setOnRefreshListener(mRefreshListener)
 
         startToRefresh()
+        initDialog()
         initEvents()
+
     }
 
 
@@ -100,5 +102,10 @@ class PositionActivity : BaseActivity(), Updatable {
         mSwipe.post {
             mSwipe.isRefreshing = true
         }
+    }
+
+
+    fun initDialog(){
+
     }
 }
