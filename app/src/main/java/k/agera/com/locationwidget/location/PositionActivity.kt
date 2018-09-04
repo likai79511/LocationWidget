@@ -12,6 +12,7 @@ import com.google.android.agera.Repositories
 import com.google.android.agera.Repository
 import com.google.android.agera.Result
 import com.google.android.agera.Updatable
+import k.agera.com.locationwidget.MyApp
 import k.agera.com.locationwidget.R
 import k.agera.com.locationwidget.adapter.PositionAdapter
 import k.agera.com.locationwidget.base.BaseActivity
@@ -25,13 +26,6 @@ import k.agera.com.locationwidget.utils.CommonUtils
  */
 class PositionActivity : BaseActivity(), Updatable {
 
-    enum class Operation {
-        REFRESH,
-        ADD,
-        REMOVE
-    }
-
-    private var mState = Operation.REFRESH
 
     private lateinit var mRv: RecyclerView
     private lateinit var mSwipe: SwipeRefreshLayout
@@ -43,7 +37,6 @@ class PositionActivity : BaseActivity(), Updatable {
         override fun onRefresh() {
             super.onRefresh()
             startShowRefreshIndicator = System.currentTimeMillis()
-            mState = Operation.REFRESH
         }
     }
 
@@ -86,33 +79,39 @@ class PositionActivity : BaseActivity(), Updatable {
                 .onUpdatesPerLoop()
                 .attemptGetFrom { skipFirstIn }
                 .orSkip()
-                .goTo(TaskDriver.instance().mMainExecutor)
+                .goTo(TaskDriver.instance().mExecutor)
                 .typedResult(String::class.java)
                 .attemptGetFrom {
                     var result = CommonUtils.instance().checkNetworkAvailable()
-                    CommonUtils.instance().showShortMessage(mRv, "没有网络连接...")
+                    if (result.failed()) {
+                        CommonUtils.instance().showShortMessage(mRv, "没有网络连接...")
+                        closeRefresh()
+                    }
                     result
                 }
                 .orSkip()
                 .attemptGetFrom {
                     var result = PositionImp.instance().checkIfExist(friend_tel!!, mFriends)
-                    if (result.failed())
+                    if (result.failed()) {
                         CommonUtils.instance().showShortMessage(mRv, result.failure.message!!)
+                        closeRefresh()
+                    }
                     result
                 }
                 .orSkip()
                 .attemptGetFrom {
-                    PositionImp.instance().getFriends()
+                    var result = PositionImp.instance().getFriends()
+                    if (result.failed())
+                        closeRefresh()
+                    result
                 }
                 .orSkip()
                 .transform {
-                    Log.e("---","---server friends:$it")
                     var friends = if (it == null || it.isEmpty()) {
                         "$friend_tel-$friend_nickname"
                     } else {
                         "$it,$friend_tel-$friend_nickname"
                     }
-                    Log.e("---","---final friends:$friends")
                     friends
                 }
                 .thenTransform {
@@ -120,7 +119,8 @@ class PositionActivity : BaseActivity(), Updatable {
                 }
                 .notifyIf { _, v2 ->
                     if (v2.failed()) {
-                        Log.e("---","--notifyIf-failed---")
+                        Log.e("---", "--notifyIf-failed---")
+                        closeRefresh()
                     }
                     v2.succeeded()
                 }
@@ -144,8 +144,8 @@ class PositionActivity : BaseActivity(), Updatable {
                 .compile()
 
 
-
         mRefresh_repo.addUpdatable(this)
+
 
         findViewById(R.id.btn_add).setOnClickListener {
             showAddFriendDialog()
@@ -155,13 +155,11 @@ class PositionActivity : BaseActivity(), Updatable {
 
     //do remove/add action when server response is ok
     override fun update() {
-        if (mState == Operation.REFRESH) {
-            closeRefresh()
-            var friends = mRefresh_repo.get().get()
-            mAdapter.setFriendList(friends)
-            mFriends = mAdapter.getFriendList()
-            Log.e("---", "---friends:" + friends)
-        }
+        closeRefresh()
+        var friends = mRefresh_repo.get().get()
+        mAdapter.setFriendList(friends)
+        mFriends = mAdapter.getFriendList()
+        Log.e("---", "---friends:" + friends)
     }
 
     private fun closeRefresh() {
@@ -188,16 +186,20 @@ class PositionActivity : BaseActivity(), Updatable {
             //tel and password check
             friend_tel = (v.findViewById(R.id.et_tel) as EditText)?.text?.toString()
             friend_nickname = (v.findViewById(R.id.et_nickname) as EditText)?.text?.toString()
-            if (CommonUtils.instance().checkTelephone(friend_tel)) {
+            if (!CommonUtils.instance().checkTelephone(friend_tel)) {
                 CommonUtils.instance().showShortMessage(mRv, "电话号码无效")
                 return@setPositiveButton
             }
-            if (CommonUtils.instance().checkNickName(friend_nickname)) {
-                CommonUtils.instance().showShortMessage(mRv, "备注／昵称  不得大于7个字符")
+            if (friend_tel?.trim().equals(MyApp.instance().selfAlias)) {
+                CommonUtils.instance().showShortMessage(mRv, "不能添加自己为好友")
+                return@setPositiveButton
+            }
+
+            if (!CommonUtils.instance().checkNickName(friend_nickname)) {
+                CommonUtils.instance().showShortMessage(mRv, "备注／昵称  不能为空")
                 return@setPositiveButton
             }
             skipFirstIn = Result.success("")
-            mState = Operation.ADD
             startToRefresh()
             OperationObserveable.onClick()
 

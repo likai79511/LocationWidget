@@ -20,7 +20,12 @@ class PositionAdapter : RecyclerView.Adapter<PositionAdapter.VH>() {
     override fun onBindViewHolder(holder: VH?, position: Int) {
         var userInfo = userList[position].split("-")
         userInfo?.let {
-            holder?.tv?.text = "${it[0]} [${it[1]}]"
+            if (userInfo.size>1){
+                holder?.tv?.text = "${it[0]} [${it[1]}]"
+            }else{
+                holder?.tv?.text = "${it[0]}"
+            }
+
         }
 
     }

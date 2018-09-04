@@ -133,9 +133,9 @@ class CommonUtils private constructor() {
     }
 
     fun checkNickName(nickName: String?): Boolean {
-        if (nickName == null)
+        if (nickName == null || nickName.trim().isEmpty())
             return false
-        return nickName.trim().length <= 7
+        return true
     }
 
 
