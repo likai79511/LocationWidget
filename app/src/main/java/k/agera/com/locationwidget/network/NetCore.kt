@@ -41,14 +41,14 @@ class NetCore {
         return HttpFunctions.httpFunction().apply(req.compile())
     }
 
-    fun doPut(url: String, header: Map<String, String>?): Result<HttpResponse> {
+    fun doPut(url: String, header: Map<String, String>?,body: String): Result<HttpResponse> {
         var req = HttpRequests.httpPutRequest(url)
         if (header != null && header.isNotEmpty()) {
             for ((key, value) in header) {
                 req.headerField(key, value)
             }
         }
-        req.connectTimeoutMs(timeout).readTimeoutMs(timeout)
+        req.body(body.toByteArray()).connectTimeoutMs(timeout).readTimeoutMs(timeout)
         return HttpFunctions.httpFunction().apply(req.compile())
     }
 

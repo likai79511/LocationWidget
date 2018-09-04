@@ -23,6 +23,7 @@ class Config {
 
         val userTable = "https://api2.bmob.cn/1/classes/user"
 
+        val TableRow_Friends = "friends"
     }
 
 

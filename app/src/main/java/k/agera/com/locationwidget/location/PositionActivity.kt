@@ -106,19 +106,21 @@ class PositionActivity : BaseActivity(), Updatable {
                 }
                 .orSkip()
                 .transform {
+                    Log.e("---","---server friends:$it")
                     var friends = if (it == null || it.isEmpty()) {
                         "$friend_tel-$friend_nickname"
                     } else {
                         "$it,$friend_tel-$friend_nickname"
                     }
+                    Log.e("---","---final friends:$friends")
                     friends
                 }
                 .thenTransform {
-                    PositionImp.instance().setFriendsInServer(it)
+                    PositionImp.instance().UpdateFriends(it)
                 }
                 .notifyIf { _, v2 ->
                     if (v2.failed()) {
-
+                        Log.e("---","--notifyIf-failed---")
                     }
                     v2.succeeded()
                 }

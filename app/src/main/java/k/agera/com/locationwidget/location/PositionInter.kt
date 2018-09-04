@@ -19,6 +19,6 @@ interface PositionInter {
     fun checkIfExist(tel: String, friends: ArrayList<String>?): Result<String>
 
 
-    fun setFriendsInServer(friends: String): Result<String>
+    fun UpdateFriends(friends: String): Result<String>
 
 }

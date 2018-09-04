@@ -4,6 +4,7 @@ import android.util.Log
 import com.google.android.agera.Result
 import com.google.gson.Gson
 import k.agera.com.locationwidget.MyApp
+import k.agera.com.locationwidget.bean.BombTableRowUpdate
 import k.agera.com.locationwidget.bean.BombUserList
 import k.agera.com.locationwidget.network.Config
 import k.agera.com.locationwidget.network.NetCore
@@ -98,21 +99,21 @@ class PositionImp : PositionInter {
         return result
     }
 
-    override fun setFriendsInServer(friends: String): Result<String> {
+    override fun UpdateFriends(friends: String): Result<String> {
         var result = Result.failure<String>()
-        NetCore.instance().doGet("${Config.userTable}?where={\"account\":\"${MyApp.instance().selfAlias}\"}", Config.BombHeaders)
+        NetCore.instance().doPut("${Config.userTable}?where={\"account\":\"${MyApp.instance().selfAlias}\"}", Config.BombHeaders,"{\"${Config.TableRow_Friends}\":\"$friends\"}")
                 .ifSucceededSendTo {
                     try {
                         var responseCode = it.responseCode
                         if (responseCode in 200..300) {
                             var data = it.bodyString.get()
                             Log.e("---", "---data:$data")
-                            var friends = gson.fromJson<BombUserList>(data, BombUserList::class.java).results[0].friends
-                            if (friends == null)
-                                result = Result.failure<String>(Exception("friends is empty"))
+                            var update = gson.fromJson<BombTableRowUpdate>(data, BombTableRowUpdate::class.java)
+                            Log.e("---","--update::$update")
+                            if (update == null || update.affectedRows<1)
+                                result = Result.failure<String>(Exception("update failed"))
                             else
-                                result = Result.success(friends)
-
+                                result = Result.success("update success")
                         }
                     } catch (e: Exception) {
                         Log.e("---", "--appear error:${e.message}")
