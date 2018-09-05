@@ -3,22 +3,34 @@ package k.agera.com.locationwidget.location
 import android.app.Activity
 import android.os.Bundle
 import android.util.Log
+import com.amap.api.location.AMapLocation
 import com.amap.api.maps2d.AMap
+import com.amap.api.maps2d.CameraUpdateFactory
+import com.amap.api.maps2d.LocationSource
 import com.amap.api.maps2d.MapView
+import com.amap.api.maps2d.model.BitmapDescriptorFactory
+import com.amap.api.maps2d.model.LatLng
+import com.amap.api.maps2d.model.MyLocationStyle
 import k.agera.com.locationwidget.R
 
 /**
  * Created by Agera on 2018/9/5.
  */
-class MapActivity : Activity() {
+class MapActivity : Activity(), LocationSource {
+
 
     lateinit var mMapView: MapView
-    lateinit var mAMap:AMap
+    lateinit var mAMap: AMap
+    var mBluePoint: LocationSource.OnLocationChangedListener? = null
 
-    var mLocationListener = object :LocationUtils.onLocationListener{
-        override fun onlocate(latitued: Double, longitude: Double, address: String) {
+    var mLocationListener = object : LocationUtils.onLocationListener {
+        override fun onlocate(location: AMapLocation) {
+            var address = location.address
+            var latitued = location.latitude
+            var longitude = location.longitude
             Log.e("---", "---onlocate---\naddress:$address\nlatitued:$latitued\nlongitude:$longitude")
-
+            mBluePoint?.onLocationChanged(location)
+            mAMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(latitued,longitude), 18f));
         }
 
     }
@@ -28,7 +40,7 @@ class MapActivity : Activity() {
         setContentView(R.layout.map_layout)
 
         findViewById(R.id.btn_refresh).setOnClickListener {
-            LocationUtils.instance().startLocation(true,mLocationListener)
+            LocationUtils.instance().startLocation(true, mLocationListener)
         }
 
 
@@ -38,12 +50,40 @@ class MapActivity : Activity() {
         initMap()
     }
 
-    private fun initMap(){
+    private fun initMap() {
         mAMap = mMapView.map
         mAMap.isTrafficEnabled = true
-        
 
 
+        mMapView.z
+        var locationStyle = MyLocationStyle()
+        locationStyle.myLocationIcon(BitmapDescriptorFactory.fromResource(R.drawable.location_marker))
+        locationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATE)
+        mAMap.setLocationSource(this)
+
+    }
+
+    override fun deactivate() {
+        mBluePoint = null
+    }
+
+    override fun activate(p0: LocationSource.OnLocationChangedListener?) {
+        mBluePoint = p0
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mMapView.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mMapView.onPause()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mMapView.onDestroy()
     }
 
 
