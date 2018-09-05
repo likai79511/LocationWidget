@@ -4,13 +4,13 @@ import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import com.amap.api.location.AMapLocation
-import com.amap.api.maps2d.AMap
-import com.amap.api.maps2d.CameraUpdateFactory
-import com.amap.api.maps2d.LocationSource
-import com.amap.api.maps2d.MapView
-import com.amap.api.maps2d.model.BitmapDescriptorFactory
-import com.amap.api.maps2d.model.LatLng
-import com.amap.api.maps2d.model.MyLocationStyle
+import com.amap.api.maps.AMap
+import com.amap.api.maps.CameraUpdateFactory
+import com.amap.api.maps.LocationSource
+import com.amap.api.maps.MapView
+import com.amap.api.maps.model.BitmapDescriptorFactory
+import com.amap.api.maps.model.LatLng
+import com.amap.api.maps.model.MyLocationStyle
 import k.agera.com.locationwidget.R
 
 /**
@@ -29,7 +29,10 @@ class MapActivity : Activity(), LocationSource {
             var latitued = location.latitude
             var longitude = location.longitude
             Log.e("---", "---onlocate---\naddress:$address\nlatitued:$latitued\nlongitude:$longitude")
-            mBluePoint?.onLocationChanged(location)
+            mBluePoint?.let {
+                it.onLocationChanged(location)
+                Log.e("---","---refresh blue point---")
+            }
             mAMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(latitued,longitude), 18f));
         }
 
