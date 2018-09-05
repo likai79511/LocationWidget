@@ -33,7 +33,7 @@ class MapActivity : Activity(), LocationSource {
                 it.onLocationChanged(location)
                 Log.e("---","---refresh blue point---")
             }
-            mAMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(latitued,longitude), 18f));
+            mAMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(latitued,longitude), 15f));
         }
 
     }
@@ -58,19 +58,23 @@ class MapActivity : Activity(), LocationSource {
         mAMap.isTrafficEnabled = true
 
 
-        mMapView.z
         var locationStyle = MyLocationStyle()
         locationStyle.myLocationIcon(BitmapDescriptorFactory.fromResource(R.drawable.location_marker))
-        locationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATE)
+
+        mAMap.myLocationStyle = locationStyle
         mAMap.setLocationSource(this)
+        mAMap.isMyLocationEnabled = true
+        mAMap.setMyLocationType(MyLocationStyle.LOCATION_TYPE_LOCATE)
 
     }
 
     override fun deactivate() {
+        Log.e("---","---deactivate---")
         mBluePoint = null
     }
 
     override fun activate(p0: LocationSource.OnLocationChangedListener?) {
+        Log.e("---","---activate---")
         mBluePoint = p0
     }
 
