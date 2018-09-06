@@ -2,6 +2,7 @@ package k.agera.com.locationwidget
 
 import android.app.Application
 import cn.jpush.android.api.JPushInterface
+import k.agera.com.locationwidget.location.MapActivity
 import k.agera.com.locationwidget.utils.CommonUtils
 
 /**
@@ -10,7 +11,9 @@ import k.agera.com.locationwidget.utils.CommonUtils
 class MyApp : Application() {
 
 
-    var selfAlias:String = ""
+    var selfAlias: String = ""
+    var mMapActivity: MapActivity? = null
+
 
     override fun onCreate() {
         super.onCreate()

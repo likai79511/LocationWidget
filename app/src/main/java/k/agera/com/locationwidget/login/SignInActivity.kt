@@ -5,16 +5,17 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import cn.jpush.android.api.JPushInterface
 import com.google.android.agera.Repositories
 import com.google.android.agera.Repository
 import com.google.android.agera.Result
 import com.google.android.agera.Updatable
-import k.agera.com.locationwidget.*
+import k.agera.com.locationwidget.MyApp
+import k.agera.com.locationwidget.R
 import k.agera.com.locationwidget.base.BaseActivity
 import k.agera.com.locationwidget.base.MainActivity
 import k.agera.com.locationwidget.core.TaskDriver
 import k.agera.com.locationwidget.observable.ClickObservable
+import k.agera.com.locationwidget.push.PushImp
 import k.agera.com.locationwidget.utils.CommonUtils
 import k.agera.com.locationwidget.utils.Constants
 
@@ -109,8 +110,7 @@ class SignInActivity : BaseActivity(), Updatable {
         CommonUtils.instance().saveData(Constants.USERNAME, account)
         CommonUtils.instance().saveData(Constants.PASSWORD, password)
         //set alias to jpush
-        JPushInterface.setAlias(MyApp.instance(), 0, account)
-        MyApp.instance().selfAlias = account!!
+        PushImp.instance().setPushAccount(account!!)
         //turn to home page
         startActivity(Intent(this, MainActivity::class.java))
         finish()

@@ -9,11 +9,11 @@ import android.widget.ImageView
 import com.google.android.agera.Repositories
 import com.google.android.agera.Result
 import com.google.android.agera.Updatable
-import k.agera.com.locationwidget.MyApp
 import k.agera.com.locationwidget.R
 import k.agera.com.locationwidget.core.TaskDriver
 import k.agera.com.locationwidget.login.SignImp
 import k.agera.com.locationwidget.login.SignInActivity
+import k.agera.com.locationwidget.push.PushImp
 import k.agera.com.locationwidget.utils.CommonUtils
 import k.agera.com.locationwidget.utils.Constants
 
@@ -89,7 +89,8 @@ class SplashActivity : BaseActivity(), Updatable {
     }
 
     override fun update() {
-        MyApp.instance().selfAlias = account!!
+        PushImp.instance().setPushAccount(account)
+
         var duration = System.currentTimeMillis() - startTime
         mRoot.postDelayed({
             startActivity(Intent(SplashActivity@this, MainActivity::class.java))

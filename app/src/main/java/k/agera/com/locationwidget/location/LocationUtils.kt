@@ -1,6 +1,5 @@
 package k.agera.com.locationwidget.location
 
-import com.amap.api.location.AMapLocation
 import com.amap.api.location.AMapLocationClient
 import com.amap.api.location.AMapLocationClientOption
 import com.amap.api.location.AMapLocationListener
@@ -16,25 +15,17 @@ class LocationUtils private constructor() {
         fun instance() = mUtils
     }
 
-    lateinit var mListener: onLocationListener
 
-    private lateinit var mLocationClient: AMapLocationClient
-    private var mLocationListener = AMapLocationListener { location ->
-        mListener?.let {
-            it.onlocate(location)
-        }
-    }
+    private var mLocationClient: AMapLocationClient = AMapLocationClient(MyApp.instance())
 
 
     init {
-        mLocationClient = AMapLocationClient(MyApp.instance())
-        mLocationClient.setLocationListener(mLocationListener)
+        mLocationClient.setLocationListener(AMapLocationListener {})
     }
 
     private lateinit var mlocationOptions: AMapLocationClientOption
 
-    fun startLocation(once: Boolean, listener: onLocationListener) {
-        mListener = listener
+    fun startLocation(once: Boolean) {
         mlocationOptions = AMapLocationClientOption()
         mlocationOptions.locationMode = AMapLocationClientOption.AMapLocationMode.Hight_Accuracy
 
@@ -46,7 +37,9 @@ class LocationUtils private constructor() {
         mLocationClient.startLocation()
     }
 
-    interface onLocationListener {
-        fun onlocate(location: AMapLocation)
+    fun stopListener() {
+        mLocationClient?.stopLocation()
     }
+
+
 }

@@ -2,96 +2,101 @@ package k.agera.com.locationwidget.location
 
 import android.app.Activity
 import android.os.Bundle
-import android.util.Log
-import com.amap.api.location.AMapLocation
+import android.support.design.widget.FloatingActionButton
+import android.view.View
+import android.widget.TextView
+import com.agera.hometools.bean.LocationData
 import com.amap.api.maps.AMap
 import com.amap.api.maps.CameraUpdateFactory
-import com.amap.api.maps.LocationSource
 import com.amap.api.maps.MapView
-import com.amap.api.maps.model.BitmapDescriptorFactory
-import com.amap.api.maps.model.LatLng
 import com.amap.api.maps.model.MyLocationStyle
+import k.agera.com.locationwidget.MyApp
 import k.agera.com.locationwidget.R
 
 /**
  * Created by Agera on 2018/9/5.
  */
-class MapActivity : Activity(), LocationSource {
+class MapActivity : Activity() {
 
 
     lateinit var mMapView: MapView
     lateinit var mAMap: AMap
-    var mBluePoint: LocationSource.OnLocationChangedListener? = null
+    var mUserTel: String? = null
+    var isSelf = false
+    lateinit var mFab: FloatingActionButton
+    lateinit var mTvDetail: TextView
 
-    var mLocationListener = object : LocationUtils.onLocationListener {
-        override fun onlocate(location: AMapLocation) {
-            var address = location.address
-            var latitued = location.latitude
-            var longitude = location.longitude
-            Log.e("---", "---onlocate---\naddress:$address\nlatitued:$latitued\nlongitude:$longitude")
-            mBluePoint?.let {
-                it.onLocationChanged(location)
-                Log.e("---","---refresh blue point---")
-            }
-            mAMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(latitued,longitude), 15f));
-        }
-
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.map_layout)
-
-        findViewById(R.id.btn_refresh).setOnClickListener {
-            LocationUtils.instance().startLocation(true, mLocationListener)
-        }
+        MyApp.instance().mMapActivity = this
 
 
+        /*  mUserTel = intent.getStringExtra("data")
+          mUserTel?.let {
+              isSelf = MyApp.instance().selfAlias == it
+          }*/
+        isSelf = true
+
+        initViews(savedInstanceState)
+        initMap()
+        initEvents()
+    }
+
+    private fun initViews(savedInstanceState: Bundle?) {
         mMapView = findViewById(R.id.map) as MapView
         mMapView.onCreate(savedInstanceState)
-
-        initMap()
+        mFab = findViewById(R.id.btn_refresh) as FloatingActionButton
+        mFab.visibility = if (isSelf) View.GONE else View.VISIBLE
+        mTvDetail = findViewById(R.id.tv_detail) as TextView
+        mTvDetail.visibility = if (isSelf) View.GONE else View.VISIBLE
     }
+
+    fun initEvents() {
+        mFab?.setOnClickListener {
+
+        }
+    }
+
 
     private fun initMap() {
         mAMap = mMapView.map
         mAMap.isTrafficEnabled = true
-
-
+        mAMap.moveCamera(CameraUpdateFactory.zoomTo(14f))
         var locationStyle = MyLocationStyle()
-        locationStyle.myLocationIcon(BitmapDescriptorFactory.fromResource(R.drawable.location_marker))
 
-        mAMap.myLocationStyle = locationStyle
-        mAMap.setLocationSource(this)
-        mAMap.isMyLocationEnabled = true
-        mAMap.setMyLocationType(MyLocationStyle.LOCATION_TYPE_LOCATE)
+        if (isSelf) {
+            mAMap.myLocationStyle = locationStyle
+            mAMap.isMyLocationEnabled = true
+            LocationUtils.instance().startLocation(!isSelf)
+        }else{
+            //request location data
 
-    }
-
-    override fun deactivate() {
-        Log.e("---","---deactivate---")
-        mBluePoint = null
-    }
-
-    override fun activate(p0: LocationSource.OnLocationChangedListener?) {
-        Log.e("---","---activate---")
-        mBluePoint = p0
+        }
     }
 
     override fun onResume() {
         super.onResume()
         mMapView.onResume()
+
     }
 
     override fun onPause() {
         super.onPause()
+        LocationUtils.instance().stopListener()
         mMapView.onPause()
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        LocationUtils.instance().stopListener()
         mMapView.onDestroy()
+        MyApp.instance().mMapActivity = null
     }
 
 
+    fun moveTo(location: LocationData) {
+
+    }
 }
