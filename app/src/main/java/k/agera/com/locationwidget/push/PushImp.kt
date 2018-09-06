@@ -2,11 +2,15 @@ package k.agera.com.locationwidget.push
 
 import cn.jpush.android.api.JPushInterface
 import k.agera.com.locationwidget.MyApp
+import k.agera.com.locationwidget.bean.PushMessage
 
 /**
  * Created by Administrator on 18-8-20.
  */
 class PushImp : PushInter {
+
+
+
     var ctx = MyApp.instance()
 
     companion object {
@@ -32,5 +36,9 @@ class PushImp : PushInter {
         if (JPushInterface.isPushStopped(ctx)) {
             JPushInterface.resumePush(ctx)
         }
+    }
+
+    override fun makeMessageModule(): PushMessage {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

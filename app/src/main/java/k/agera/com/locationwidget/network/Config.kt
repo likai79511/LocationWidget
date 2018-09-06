@@ -24,6 +24,12 @@ class Config {
         val userTable = "https://api2.bmob.cn/1/classes/user"
 
         val TableRow_Friends = "friends"
+
+        val mPushUrl: String = "https://api.jpush.cn/v3/push"
+
+        val PushHeaders = AppendMap<String, String>().put("Content-Type", "application/json")
+                .put("Authorization", "Basic MmRhOTQ2ZDRhNDhjZTliMTA0NWRkZDhjOmEzYWZhOTViMzEzNTI0YmFkZGNlNWFhMQ==")
+                .compile()
     }
 
 
