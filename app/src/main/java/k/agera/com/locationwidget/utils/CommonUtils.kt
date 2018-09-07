@@ -9,6 +9,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Point
 import android.net.ConnectivityManager
+import android.os.Build
 import android.os.IBinder
 import android.support.design.widget.Snackbar
 import android.util.Log
@@ -158,18 +159,33 @@ class CommonUtils private constructor() {
     }
 
     fun startDaemon() {
+        Log.e("---", "---startDaemon---")
         var am = ctx.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        var intent = PendingIntent.getService(ctx, 0, Intent(ctx, DaemonService::class.java), PendingIntent.FLAG_UPDATE_CURRENT)
-        am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 3600_000, intent)
+        var intent = Intent(ctx, DaemonService::class.java)
+        var pendingIntent = PendingIntent.getService(ctx, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        /*  var am = ctx.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+          var intent = Intent(ctx, DaemonService::class.java)
+          var pendingIntent = PendingIntent.getService(ctx, 0,intent, PendingIntent.FLAG_UPDATE_CURRENT)
+          am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 1_000, pendingIntent)*/
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            am.setAlarmClock(AlarmManager.AlarmClockInfo(System.currentTimeMillis(), null), pendingIntent)
+        }else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            am.setExact(AlarmManager.RTC_WAKEUP,System.currentTimeMillis(),pendingIntent)
+        }else{
+            am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 1_000, pendingIntent)
+        }
     }
 
 
     class DaemonService : Service() {
         override fun onBind(intent: Intent?): IBinder {
             TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            Log.e("---", "---DaemonService  onBind---")
         }
 
         override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+            Log.e("---", "---DaemonService  onStartCommand---")
             PushImp.instance().resumeService()
             return super.onStartCommand(intent, flags, startId)
         }

@@ -2,9 +2,9 @@ package k.agera.com.locationwidget.location
 
 import android.app.Activity
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
 import android.support.v7.widget.CardView
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import com.agera.hometools.bean.LocationData
 import com.amap.api.maps.AMap
@@ -26,7 +26,7 @@ class MapActivity : Activity() {
     lateinit var mAMap: AMap
     var mUserTel: String? = null
     var isSelf = false
-    lateinit var mFab: FloatingActionButton
+    lateinit var mFab: ImageView
     lateinit var mTvDetail: TextView
     lateinit var mCardDetail: CardView
 
@@ -55,7 +55,7 @@ class MapActivity : Activity() {
     private fun initViews(savedInstanceState: Bundle?) {
         mMapView = findViewById(R.id.map) as MapView
         mMapView.onCreate(savedInstanceState)
-        mFab = findViewById(R.id.btn_refresh) as FloatingActionButton
+        mFab = findViewById(R.id.btn_refresh) as ImageView
         mFab.visibility = if (isSelf) View.GONE else View.VISIBLE
         mTvDetail = findViewById(R.id.tv_detail) as TextView
         mCardDetail = findViewById(R.id.cd_detail) as CardView
