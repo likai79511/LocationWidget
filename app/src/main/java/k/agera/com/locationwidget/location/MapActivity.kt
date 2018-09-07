@@ -14,6 +14,7 @@ import com.amap.api.maps.model.*
 import k.agera.com.locationwidget.MyApp
 import k.agera.com.locationwidget.R
 import k.agera.com.locationwidget.push.PushImp
+import k.agera.com.locationwidget.utils.CommonUtils
 
 /**
  * Created by Agera on 2018/9/5.
@@ -27,7 +28,7 @@ class MapActivity : Activity() {
     var isSelf = false
     lateinit var mFab: FloatingActionButton
     lateinit var mTvDetail: TextView
-    lateinit var mCardDetail:CardView
+    lateinit var mCardDetail: CardView
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,9 +45,11 @@ class MapActivity : Activity() {
         initViews(savedInstanceState)
         initMap()
         initEvents()
-        mUserTel?.let {
-            PushImp.instance().requireLocationByAlias(it)
+        if (!isSelf){
+            CommonUtils.instance().showShortMessage(mMapView,"正查定位，请稍等...")
+            PushImp.instance().requireLocationByAlias(mUserTel!!)
         }
+
     }
 
     private fun initViews(savedInstanceState: Bundle?) {
@@ -71,13 +74,15 @@ class MapActivity : Activity() {
     private fun initMap() {
         mAMap = mMapView.map
         mAMap.isTrafficEnabled = true
-        mAMap.moveCamera(CameraUpdateFactory.zoomTo(12f))
+        mAMap.moveCamera(CameraUpdateFactory.zoomTo(14f))
         var locationStyle = MyLocationStyle()
 
         if (isSelf) {
             mAMap.myLocationStyle = locationStyle
             mAMap.isMyLocationEnabled = true
             LocationUtils.instance().startLocation(!isSelf)
+        } else {
+            mAMap.uiSettings.isZoomControlsEnabled = false
         }
     }
 
@@ -102,9 +107,14 @@ class MapActivity : Activity() {
 
 
     fun moveTo(location: LocationData) {
+        if (location.latitude == 0.0 && location.longitude == 0.0) {
+            CommonUtils.instance().showShortMessage(mMapView, "定位失败，请稍后再试...")
+            return
+        }
+
         var latlng = LatLng(location.latitude, location.longitude)
         mAMap?.addMarker(MarkerOptions().position(latlng).icon(BitmapDescriptorFactory.fromResource(R.drawable.poi_marker_pressed)))
-        mAMap.moveCamera(CameraUpdateFactory.newCameraPosition(CameraPosition(latlng, 12f, 0f, 0f)))
+        mAMap.moveCamera(CameraUpdateFactory.newCameraPosition(CameraPosition(latlng, 14f, 0f, 0f)))
         mTvDetail?.text = "位置: ${location.detail}\nlatitude,longitude: ${location.latitude} , ${location.longitude}\n更新的时间: ${location.time}"
 
     }

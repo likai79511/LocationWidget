@@ -25,6 +25,8 @@
                 android:id="@+id/btn_refresh"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
+                android:backgroundTint="#fff"
+                android:src="@drawable/alipay_msp_refresh"
                 android:layout_gravity="bottom|right"
                 android:layout_margin="10dp" />
         </FrameLayout>
