@@ -30,6 +30,9 @@ class Config {
         val PushHeaders = AppendMap<String, String>().put("Content-Type", "application/json")
                 .put("Authorization", "Basic MmRhOTQ2ZDRhNDhjZTliMTA0NWRkZDhjOmEzYWZhOTViMzEzNTI0YmFkZGNlNWFhMQ==")
                 .compile()
+
+        val MESSAGE_LOCATION = "location"
+        val MESSAGE_REPLY_LOCATION = "reply_location"
     }
 
 

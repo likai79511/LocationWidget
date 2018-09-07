@@ -2,7 +2,6 @@ package k.agera.com.locationwidget.location
 
 import android.util.Log
 import com.google.android.agera.Result
-import com.google.gson.Gson
 import k.agera.com.locationwidget.MyApp
 import k.agera.com.locationwidget.bean.BombTableRowUpdate
 import k.agera.com.locationwidget.bean.BombUserList
@@ -15,7 +14,6 @@ import k.agera.com.locationwidget.utils.AppendMap
  */
 class PositionImp : PositionInter {
 
-    private var gson = Gson()
 
     companion object {
         private var imp = PositionImp()
@@ -25,14 +23,13 @@ class PositionImp : PositionInter {
 
     override fun getFriends(): Result<String> {
         var result = Result.failure<String>()
-        NetCore.instance().doGet("${Config.userTable}?where={\"account\":\"${MyApp.instance().selfAlias}\"}", Config.BombHeaders)
+        NetCore.instance().doGet("${Config.userTable}?where={\"account\":\"${MyApp.instance().getSelf()}\"}", Config.BombHeaders)
                 .ifSucceededSendTo {
                     try {
                         var responseCode = it.responseCode
                         if (responseCode in 200..300) {
                             var data = it.bodyString.get()
-                            Log.e("---", "---data:$data")
-                            var friends = gson.fromJson<BombUserList>(data, BombUserList::class.java).results[0].friends
+                            var friends = MyApp.instance().gson.fromJson<BombUserList>(data, BombUserList::class.java).results[0].friends
                             if (friends == null)
                                 result = Result.failure<String>(Exception("friends is empty"))
                             else
@@ -82,8 +79,7 @@ class PositionImp : PositionInter {
                     var responseCode = it.responseCode
                     if (responseCode in 200..300) {
                         var data = it.bodyString.get()
-                        Log.e("---", "---data:$data")
-                        var list = gson.fromJson<BombUserList>(data, BombUserList::class.java)
+                        var list = MyApp.instance().gson.fromJson<BombUserList>(data, BombUserList::class.java)
                         list.results?.let {
                             if (it.size > 0)
                                 result = Result.success("该用户存在.")
@@ -101,14 +97,13 @@ class PositionImp : PositionInter {
 
     override fun UpdateFriends(friends: String): Result<String> {
         var result = Result.failure<String>()
-        NetCore.instance().doPut("${Config.userTable}?where={\"account\":\"${MyApp.instance().selfAlias}\"}", Config.BombHeaders,"{\"${Config.TableRow_Friends}\":\"$friends\"}")
+        NetCore.instance().doPut("${Config.userTable}?where={\"account\":\"${MyApp.instance().getSelf()}\"}", Config.BombHeaders,"{\"${Config.TableRow_Friends}\":\"$friends\"}")
                 .ifSucceededSendTo {
                     try {
                         var responseCode = it.responseCode
                         if (responseCode in 200..300) {
                             var data = it.bodyString.get()
-                            Log.e("---", "---data:$data")
-                            var update = gson.fromJson<BombTableRowUpdate>(data, BombTableRowUpdate::class.java)
+                            var update = MyApp.instance().gson.fromJson<BombTableRowUpdate>(data, BombTableRowUpdate::class.java)
                             Log.e("---","--update::$update")
                             if (update == null || update.affectedRows<1)
                                 result = Result.failure<String>(Exception("update failed"))

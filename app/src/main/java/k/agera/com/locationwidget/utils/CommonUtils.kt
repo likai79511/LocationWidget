@@ -21,6 +21,8 @@ import com.google.android.agera.Result
 import k.agera.com.locationwidget.MyApp
 import k.agera.com.locationwidget.core.TaskDriver
 import k.agera.com.locationwidget.push.PushImp
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * Created by Agera on 2018/6/14.
@@ -28,6 +30,7 @@ import k.agera.com.locationwidget.push.PushImp
 class CommonUtils private constructor() {
 
     var ctx = MyApp.instance()
+    var dateFormat = SimpleDateFormat("yyyy-MM-dd  HH:mm:ss")
 
     companion object {
         private var instance: CommonUtils = CommonUtils()
@@ -96,6 +99,9 @@ class CommonUtils private constructor() {
         }
         return null
     }
+
+
+    fun getNowDate() = dateFormat.format(Date())
 
     fun clearData(vararg keys: String): Boolean? {
         try {

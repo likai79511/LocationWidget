@@ -10,4 +10,6 @@
     <string name="cancel">取消</string>
 
     <string name="ok">确认</string>
+
+    <string name="clear">清除缓存</string>
 </resources>

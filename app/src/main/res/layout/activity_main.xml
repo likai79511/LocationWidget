@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:background="#55efefef"
     android:padding="10dp"
+    android:orientation="vertical"
     tools:context=".base.MainActivity">
 
 
@@ -16,4 +17,10 @@
         android:text="Location" />
 
 
+    <Button
+        android:id="@+id/btn_clear_cache"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/clear" />
 </LinearLayout>

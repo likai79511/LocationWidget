@@ -26,4 +26,4 @@ data class Audience(var alias: Array<String>)
 
 data class Message(var msg_content: String,
                    var content_type: String,
-                   var title: String)
+                   var title: String)       //tel who the message from

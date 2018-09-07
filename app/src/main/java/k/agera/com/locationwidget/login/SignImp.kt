@@ -2,7 +2,7 @@ package k.agera.com.locationwidget.login
 
 import android.util.Log
 import com.google.android.agera.Result
-import com.google.gson.Gson
+import k.agera.com.locationwidget.MyApp
 import k.agera.com.locationwidget.bean.BombUserList
 import k.agera.com.locationwidget.bean.User
 import k.agera.com.locationwidget.network.Config
@@ -13,7 +13,6 @@ import k.agera.com.locationwidget.network.NetCore
  */
 class SignImp : SignInter {
 
-    var gson = Gson()
     var result = Result.failure<String>()
 
     companion object {
@@ -31,7 +30,7 @@ class SignImp : SignInter {
     }
 
     override fun signUp(account: String, password: String): Result<String> {
-        NetCore.instance().doPost(Config.userTable, Config.BombHeaders, gson.toJson(User(account, password, "")))
+        NetCore.instance().doPost(Config.userTable, Config.BombHeaders, MyApp.instance().gson.toJson(User(account, password, "")))
                 .ifSucceededSendTo {
                     var responseCode = it.responseCode
                     if (responseCode in 200..300) {
@@ -54,8 +53,7 @@ class SignImp : SignInter {
                     var responseCode = it.responseCode
                     if (responseCode in 200..300) {
                         var data = it.bodyString.get()
-                        Log.e("---", "---data:$data")
-                        var list = gson.fromJson<BombUserList>(data, BombUserList::class.java)
+                        var list = MyApp.instance().gson.fromJson<BombUserList>(data, BombUserList::class.java)
                         list.results?.let {
                             if (it.size > 0)
                                 result = Result.success("success")

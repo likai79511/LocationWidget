@@ -190,7 +190,7 @@ class PositionActivity : BaseActivity(), Updatable {
                 CommonUtils.instance().showShortMessage(mRv, "电话号码无效")
                 return@setPositiveButton
             }
-            if (friend_tel?.trim().equals(MyApp.instance().selfAlias)) {
+            if (friend_tel?.trim().equals(MyApp.instance().getSelf())) {
                 CommonUtils.instance().showShortMessage(mRv, "不能添加自己为好友")
                 return@setPositiveButton
             }

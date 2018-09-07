@@ -1,5 +1,6 @@
 package k.agera.com.locationwidget.push
 
+import com.agera.hometools.bean.LocationData
 import k.agera.com.locationwidget.bean.PushMessage
 
 
@@ -13,9 +14,12 @@ interface PushInter {
     //require location by alisa
     fun requireLocationByAlias(alisa: String)
 
+    fun replyLocationtoAlias(alias: String,location:LocationData)
+
     //check and resume
     fun resumeService()
 
-    fun makeMessageModule(): PushMessage
+    fun makeMessageModule(to:String,type:String,msg:String): PushMessage
+
 
 }

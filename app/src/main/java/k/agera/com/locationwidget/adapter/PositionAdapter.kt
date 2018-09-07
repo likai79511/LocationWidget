@@ -15,7 +15,7 @@ import k.agera.com.locationwidget.utils.CommonUtils
  */
 class PositionAdapter : RecyclerView.Adapter<PositionAdapter.VH>() {
 
-    var userList: ArrayList<String> = AppendList<String>().add("${MyApp.instance().selfAlias}-自己").compile()
+    var userList: ArrayList<String> = AppendList<String>().add("${MyApp.instance().getSelf()}-自己").compile()
 
     override fun onBindViewHolder(holder: VH?, position: Int) {
         var userInfo = userList[position].split("-")
@@ -67,7 +67,7 @@ class PositionAdapter : RecyclerView.Adapter<PositionAdapter.VH>() {
 
     fun clearFriendList() {
         userList.clear()
-        userList.add("${MyApp.instance().selfAlias}-自己")
+        userList.add("${MyApp.instance().getSelf()}-自己")
     }
 
     fun getFriendList() = userList
