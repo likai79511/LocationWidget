@@ -29,7 +29,7 @@ class PositionActivity : BaseActivity(), Updatable {
 
     private lateinit var mRv: RecyclerView
     private lateinit var mSwipe: SwipeRefreshLayout
-    private var mAdapter = PositionAdapter()
+    private lateinit var mAdapter:PositionAdapter
 
     var startShowRefreshIndicator = 0L
 
@@ -60,6 +60,9 @@ class PositionActivity : BaseActivity(), Updatable {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.position_layout)
+
+
+        mAdapter = PositionAdapter(this)
 
         mRv = findViewById(R.id.lv) as RecyclerView
         mSwipe = findViewById(R.id.swipe) as SwipeRefreshLayout
@@ -150,6 +153,8 @@ class PositionActivity : BaseActivity(), Updatable {
         findViewById(R.id.btn_add).setOnClickListener {
             showAddFriendDialog()
         }
+
+
     }
 
 

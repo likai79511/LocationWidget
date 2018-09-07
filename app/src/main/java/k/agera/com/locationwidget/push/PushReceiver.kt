@@ -58,8 +58,10 @@ class PushReceiver : BroadcastReceiver() {
                 }
 
                 Config.MESSAGE_REPLY_LOCATION -> {
-                    var msg = MyApp.instance()
+                    MyApp.instance().mMapActivity ?: return
+                    var location = MyApp.instance().gson.fromJson<LocationData>(bundle.get(JPushInterface.EXTRA_MESSAGE).toString(), LocationData::class.java)
                     //show location on mapview
+                    MyApp.instance().mMapActivity?.moveTo(location)
                 }
             }
 

@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import k.agera.com.locationwidget.R
 import k.agera.com.locationwidget.location.PositionActivity
-import k.agera.com.locationwidget.push.PushImp
 
 class MainActivity : Activity() {
 
@@ -20,7 +19,7 @@ class MainActivity : Activity() {
 
 
         findViewById(R.id.btn_clear_cache)?.setOnClickListener {
-            PushImp.instance().requireLocationByAlias("12345678902")
+//            PushImp.instance().requireLocationByAlias("12345678902")
         }
 
     }
