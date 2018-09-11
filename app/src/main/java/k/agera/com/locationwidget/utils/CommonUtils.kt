@@ -9,6 +9,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.graphics.Point
 import android.net.ConnectivityManager
+import android.os.Build
 import android.support.design.widget.Snackbar
 import android.util.Log
 import android.util.TypedValue
@@ -159,7 +160,7 @@ class CommonUtils private constructor() {
     fun startDaemon() {
         var build = JobInfo.Builder(0, ComponentName(ctx.baseContext, DaemonService::class.java))
         build.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-        build.setPeriodic(10 * 60 * 1000)
+        build.setPeriodic(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) 15 * 60 * 1000 else 10 * 60 * 1000)
         build.setPersisted(true)
         (ctx.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler).schedule(build.build())
     }
@@ -167,12 +168,10 @@ class CommonUtils private constructor() {
 
     class DaemonService : JobService() {
         override fun onStopJob(params: JobParameters?): Boolean {
-            Log.e("--","--DaemonService--onStopJob")
             return true
         }
 
         override fun onStartJob(params: JobParameters?): Boolean {
-            Log.e("--","--DaemonService--onStartJob")
             PushImp.instance().resumeService()
             return true
         }
