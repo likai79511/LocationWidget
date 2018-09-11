@@ -9,12 +9,12 @@ import com.google.android.agera.Repositories
 import com.google.android.agera.Repository
 import com.google.android.agera.Result
 import com.google.android.agera.Updatable
-import k.agera.com.locationwidget.base.BaseActivity
-import k.agera.com.locationwidget.utils.CommonUtils
 import k.agera.com.locationwidget.MyApp
 import k.agera.com.locationwidget.R
+import k.agera.com.locationwidget.base.BaseActivity
 import k.agera.com.locationwidget.core.TaskDriver
 import k.agera.com.locationwidget.observable.ClickObservable
+import k.agera.com.locationwidget.utils.CommonUtils
 
 /**
  * Created by Agera on 2018/8/21.
@@ -49,6 +49,11 @@ class SignUpActivity : BaseActivity(), Updatable {
             (MyApp.instance().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(it.windowToken, 0)
             clickObservable.onClick(it)
         }
+        findViewById(R.id.ll_root).setOnClickListener {
+            var imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(it.windowToken, 0)
+        }
+
         mRep = Repositories.repositoryWithInitialValue(Result.absent<String>())
                 .observe(clickObservable)
                 .onUpdatesPerLoop()
@@ -99,7 +104,9 @@ class SignUpActivity : BaseActivity(), Updatable {
     override fun update() {
         CommonUtils.instance().showShortMessage(mEt_accound, "注册成功，跳转登录页面...")
         TaskDriver.instance().mMainHandler.postDelayed({
-            startActivity(Intent(SignUpActivity@ this, SignInActivity::class.java))
+            var intent = Intent(SignUpActivity@ this, SignInActivity::class.java)
+            intent.putExtra("account", account)
+            startActivity(intent)
             finish()
         }, 1_500)
     }

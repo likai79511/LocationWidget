@@ -31,7 +31,8 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".base.SplashActivity">
+        <activity android:name=".base.SplashActivity"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -41,10 +42,12 @@
 
         <activity
             android:name=".login.SignUpActivity"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan"
+            android:launchMode="singleTask"/>
         <activity
             android:name=".login.SignInActivity"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan"
+            android:launchMode="singleTask"/>
 
         <activity android:name=".base.MainActivity" />
 

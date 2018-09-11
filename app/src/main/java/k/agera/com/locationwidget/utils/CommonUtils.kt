@@ -160,7 +160,7 @@ class CommonUtils private constructor() {
     fun startDaemon() {
         var build = JobInfo.Builder(0, ComponentName(ctx.baseContext, DaemonService::class.java))
         build.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-        build.setPeriodic(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) 15 * 60 * 1000 else 10 * 60 * 1000)
+        build.setPeriodic(if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) 15 * 60 * 1000 else 10 * 60 * 1000)
         build.setPersisted(true)
         (ctx.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler).schedule(build.build())
     }

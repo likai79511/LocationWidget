@@ -42,6 +42,11 @@ class SignInActivity : BaseActivity(), Updatable {
         mEt_accound = findViewById(R.id.et_account) as EditText
         mEt_password = findViewById(R.id.et_password) as EditText
 
+        var account = intent?.getStringExtra("account")
+        account?.let {
+            mEt_accound?.setText(account)
+        }
+
         initEvents()
     }
 
@@ -55,6 +60,11 @@ class SignInActivity : BaseActivity(), Updatable {
         findViewById(R.id.btn_sign_up).setOnClickListener {
             (MyApp.instance().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(it.windowToken, 0)
             startActivity(Intent(SignInActivity@ this, SignUpActivity::class.java))
+        }
+
+        findViewById(R.id.ll_root).setOnClickListener {
+            var imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(it.windowToken, 0)
         }
 
         mRep = Repositories.repositoryWithInitialValue(Result.absent<String>())
