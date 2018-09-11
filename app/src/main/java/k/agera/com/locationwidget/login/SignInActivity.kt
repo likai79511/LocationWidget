@@ -3,6 +3,7 @@ package k.agera.com.locationwidget.login
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import com.google.android.agera.Repositories
@@ -42,13 +43,21 @@ class SignInActivity : BaseActivity(), Updatable {
         mEt_accound = findViewById(R.id.et_account) as EditText
         mEt_password = findViewById(R.id.et_password) as EditText
 
-        var account = intent?.getStringExtra("account")
-        account?.let {
-            mEt_accound?.setText(account)
-        }
 
         initEvents()
     }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+
+        var account = intent?.getStringExtra("account")
+        Log.e("---", "--get account:$account")
+        account?.let {
+            mEt_accound?.setText(account)
+            mEt_password?.requestFocus()
+        }
+    }
+
 
     private fun initEvents() {
         findViewById(R.id.btn_sign_in).setOnClickListener {
