@@ -1,16 +1,14 @@
 package k.agera.com.locationwidget.utils
 
-import android.app.AlarmManager
 import android.app.AlertDialog
-import android.app.PendingIntent
-import android.app.Service
-import android.content.BroadcastReceiver
+import android.app.job.JobInfo
+import android.app.job.JobParameters
+import android.app.job.JobScheduler
+import android.app.job.JobService
+import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
 import android.graphics.Point
 import android.net.ConnectivityManager
-import android.os.Build
-import android.os.IBinder
 import android.support.design.widget.Snackbar
 import android.util.Log
 import android.util.TypedValue
@@ -159,42 +157,25 @@ class CommonUtils private constructor() {
     }
 
     fun startDaemon() {
-        Log.e("---", "---startDaemon---")
-        var am = ctx.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        var intent = Intent(ctx, DaemonService::class.java)
-        var pendingIntent = PendingIntent.getService(ctx, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        /*  var am = ctx.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-          var intent = Intent(ctx, DaemonService::class.java)
-          var pendingIntent = PendingIntent.getService(ctx, 0,intent, PendingIntent.FLAG_UPDATE_CURRENT)
-          am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 1_000, pendingIntent)*/
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            am.setAlarmClock(AlarmManager.AlarmClockInfo(System.currentTimeMillis(), null), pendingIntent)
-        }else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-            am.setExact(AlarmManager.RTC_WAKEUP,System.currentTimeMillis(),pendingIntent)
-        }else{
-            am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 1_000, pendingIntent)
-        }
+        var build = JobInfo.Builder(0, ComponentName(ctx.baseContext, DaemonService::class.java))
+        build.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+        build.setPeriodic(10 * 60 * 1000)
+        build.setPersisted(true)
+        (ctx.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler).schedule(build.build())
     }
 
 
-    class DaemonService : Service() {
-        override fun onBind(intent: Intent?): IBinder {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            Log.e("---", "---DaemonService  onBind---")
+    class DaemonService : JobService() {
+        override fun onStopJob(params: JobParameters?): Boolean {
+            Log.e("--","--DaemonService--onStopJob")
+            return true
         }
 
-        override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-            Log.e("---", "---DaemonService  onStartCommand---")
+        override fun onStartJob(params: JobParameters?): Boolean {
+            Log.e("--","--DaemonService--onStartJob")
             PushImp.instance().resumeService()
-            return super.onStartCommand(intent, flags, startId)
+            return true
         }
-    }
 
-
-    class BootReceiver : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            instance.startDaemon()
-        }
     }
 }

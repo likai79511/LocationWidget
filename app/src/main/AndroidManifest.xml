@@ -53,29 +53,21 @@
         <activity android:name=".location.MapActivity" />
 
         <!--App Deamon-->
-        <service android:name=".utils.CommonUtils$DaemonService" />
+        <service
+            android:name=".utils.CommonUtils$DaemonService"
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
 
-        <receiver android:name=".utils.CommonUtils$BootReceiver">
-            <intent-filter>
-                <action android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.MEDIA_MOUNTED" />
-                <action android:name="android.intent.action.MEDIA_UNMOUNTED" />
-
-                <data android:scheme="file"></data>
-            </intent-filter>
-        </receiver>
 
         <receiver
             android:name=".push.PushReceiver"
             android:enabled="true"
             android:exported="false">
-
             <intent-filter>
                 <action android:name="cn.jpush.android.intent.REGISTRATION" />
                 <action android:name="cn.jpush.android.intent.MESSAGE_RECEIVED" />
                 <action android:name="cn.jpush.android.intent.CONNECTION" />
+
                 <category android:name="k.agera.com.locationwidget" />
             </intent-filter>
         </receiver>

@@ -14,12 +14,15 @@ import k.agera.com.locationwidget.utils.Constants
 class MyApp : Application() {
 
 
+
     private var selfAlias: String = ""
     var mMapActivity: MapActivity? = null
     var gson = Gson()
 
     override fun onCreate() {
         super.onCreate()
+
+
 
         app = this
         JPushInterface.setDebugMode(true)
@@ -32,6 +35,10 @@ class MyApp : Application() {
     companion object {
         private lateinit var app: MyApp
         fun instance() = app
+
+        //for testing
+        var startTime = 0L
+        var endTime = 0L
     }
 
     fun getSelf(): String {

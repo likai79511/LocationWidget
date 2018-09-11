@@ -32,7 +32,7 @@ class PushImp : PushInter {
     }
 
     override fun requireLocationByAlias(alisa: String) {
-        Log.e("---","--requireLocationByAlias:$alisa")
+        Log.e("---", "--requireLocationByAlias:$alisa")
         var msgJson = MyApp.instance().gson.toJson(makeMessageModule(alisa, Config.MESSAGE_LOCATION, alisa))
         TaskDriver.instance().execute(Runnable {
             NetCore.instance().doPost(Config.mPushUrl, Config.PushHeaders, msgJson)
