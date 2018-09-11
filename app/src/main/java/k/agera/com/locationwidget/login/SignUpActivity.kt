@@ -3,6 +3,7 @@ package k.agera.com.locationwidget.login
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import com.google.android.agera.Repositories
@@ -106,6 +107,7 @@ class SignUpActivity : BaseActivity(), Updatable {
         TaskDriver.instance().mMainHandler.postDelayed({
             var intent = Intent(SignUpActivity@ this, SignInActivity::class.java)
             intent.putExtra("account", account)
+            Log.e("---","--set account: $account")
             startActivity(intent)
             finish()
         }, 1_500)
