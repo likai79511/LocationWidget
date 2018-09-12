@@ -35,7 +35,6 @@ class PushReceiver : BroadcastReceiver() {
             var lat = location.latitude
             var long = location.longitude
 
-            Log.e("---", "---address:$address")
             PushImp.instance().replyLocationtoAlias(from, LocationData(lat, long, CommonUtils.instance().getNowDate(), address))
 
         }
