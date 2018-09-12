@@ -5,8 +5,10 @@ import android.app.job.JobInfo
 import android.app.job.JobParameters
 import android.app.job.JobScheduler
 import android.app.job.JobService
+import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.graphics.Point
 import android.net.ConnectivityManager
 import android.os.Build
@@ -174,6 +176,12 @@ class CommonUtils private constructor() {
         override fun onStartJob(params: JobParameters?): Boolean {
             PushImp.instance().resumeService()
             return true
+        }
+    }
+
+    class BootReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            PushImp.instance().resumeService()
         }
 
     }
