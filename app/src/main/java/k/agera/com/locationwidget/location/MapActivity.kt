@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.agera.hometools.bean.LocationData
+import com.amap.api.location.AMapLocation
 import com.amap.api.maps.AMap
 import com.amap.api.maps.CameraUpdateFactory
 import com.amap.api.maps.MapView
@@ -58,8 +59,8 @@ class MapActivity : Activity() {
         mFab = findViewById(R.id.btn_refresh) as ImageView
         mFab.visibility = if (isSelf) View.GONE else View.VISIBLE
         mTvDetail = findViewById(R.id.tv_detail) as TextView
-        mCardDetail = findViewById(R.id.cd_detail) as CardView
-        mCardDetail.visibility = if (isSelf) View.GONE else View.VISIBLE
+//        mCardDetail = findViewById(R.id.cd_detail) as CardView
+//        mCardDetail.visibility = if (isSelf) View.GONE else View.VISIBLE
     }
 
     fun initEvents() {
@@ -80,7 +81,12 @@ class MapActivity : Activity() {
         if (isSelf) {
             mAMap.myLocationStyle = locationStyle
             mAMap.isMyLocationEnabled = true
-            LocationUtils.instance().startLocation(!isSelf)
+            LocationUtils.instance().startLocation(!isSelf,object:LocationUtils.onLocateListener{
+                override fun onLocate(location: AMapLocation?) {
+                    location?:return
+                    mTvDetail?.text = "位置: ${location.address}\nlatitude,longitude: ${location.latitude} , ${location.longitude}"
+                }
+            })
         } else {
             mAMap.uiSettings.isZoomControlsEnabled = false
         }
