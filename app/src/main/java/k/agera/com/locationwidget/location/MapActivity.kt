@@ -3,6 +3,7 @@ package k.agera.com.locationwidget.location
 import android.app.Activity
 import android.os.Bundle
 import android.support.v7.widget.CardView
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -46,8 +47,8 @@ class MapActivity : Activity() {
         initViews(savedInstanceState)
         initMap()
         initEvents()
-        if (!isSelf){
-            CommonUtils.instance().showShortMessage(mMapView,"正查定位，请稍等...")
+        if (!isSelf) {
+            CommonUtils.instance().showShortMessage(mMapView, "正查定位，请稍等...")
             PushImp.instance().requireLocationByAlias(mUserTel!!)
         }
 
@@ -81,9 +82,9 @@ class MapActivity : Activity() {
         if (isSelf) {
             mAMap.myLocationStyle = locationStyle
             mAMap.isMyLocationEnabled = true
-            LocationUtils.instance().startLocation(!isSelf,object:LocationUtils.onLocateListener{
+            LocationUtils.instance().startLocation(!isSelf, object : LocationUtils.onLocateListener {
                 override fun onLocate(location: AMapLocation?) {
-                    location?:return
+                    location ?: return
                     mTvDetail?.text = "位置: ${location.address}\nlatitude,longitude: ${location.latitude} , ${location.longitude}"
                 }
             })
@@ -113,6 +114,7 @@ class MapActivity : Activity() {
 
 
     fun moveTo(location: LocationData) {
+        Log.e("---", "---result::${location.toString()}")
         if (location.latitude == 0.0 && location.longitude == 0.0) {
             CommonUtils.instance().showShortMessage(mMapView, "定位失败，请稍后再试...")
             return

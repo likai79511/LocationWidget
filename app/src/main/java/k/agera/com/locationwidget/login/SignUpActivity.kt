@@ -45,12 +45,12 @@ class SignUpActivity : BaseActivity(), Updatable {
 
     fun initEvents() {
 
-        findViewById(R.id.btn_sign_up).setOnClickListener {
+        findViewById(R.id.btn_sign_up)?.setOnClickListener {
             activeOnce = Result.success(true)
             (MyApp.instance().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(it.windowToken, 0)
             clickObservable.onClick(it)
         }
-        findViewById(R.id.ll_root).setOnClickListener {
+        findViewById(R.id.ll_root)?.setOnClickListener {
             var imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(it.windowToken, 0)
         }

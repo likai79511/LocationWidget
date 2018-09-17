@@ -36,7 +36,7 @@ class SignImp : SignInter {
                     if (responseCode in 200..300) {
                         var data = it.bodyString.get()
                         result = Result.success(data)
-                    }else{
+                    } else {
                         result = Result.failure()
                     }
                 }

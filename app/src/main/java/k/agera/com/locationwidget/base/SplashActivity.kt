@@ -32,7 +32,7 @@ class SplashActivity : BaseActivity(), Updatable {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.splash_layout)
-        mRoot = findViewById(R.id.root)
+        mRoot = findViewById(R.id.root)!!
         mImg = findViewById(R.id.img) as ImageView
 
         startTime = System.currentTimeMillis()
@@ -75,7 +75,7 @@ class SplashActivity : BaseActivity(), Updatable {
                     SignImp.instance().signIn(account, password)
                 }
                 .notifyIf { _, v2 ->
-                    if (v2.failed()){
+                    if (v2.failed()) {
                         //clear account
                         CommonUtils.instance().clearData(Constants.USERNAME)
                         CommonUtils.instance().clearData(Constants.PASSWORD)
@@ -93,7 +93,7 @@ class SplashActivity : BaseActivity(), Updatable {
 
         var duration = System.currentTimeMillis() - startTime
         mRoot.postDelayed({
-            startActivity(Intent(SplashActivity@this, MainActivity::class.java))
+            startActivity(Intent(SplashActivity@ this, MainActivity::class.java))
             finish()
         }, if (duration > 2_500) 0 else 2_500 - duration)
     }
@@ -102,7 +102,7 @@ class SplashActivity : BaseActivity(), Updatable {
     private fun gotoSignInPage() {
         var duration = System.currentTimeMillis() - startTime
         mRoot.postDelayed({
-            startActivity(Intent(SplashActivity@this,SignInActivity::class.java))
+            startActivity(Intent(SplashActivity@ this, SignInActivity::class.java))
             finish()
         }, if (duration > 2_500) 0 else 2_500 - duration)
     }

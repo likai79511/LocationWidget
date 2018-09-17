@@ -50,7 +50,6 @@ class PushReceiver : BroadcastReceiver() {
             var type = bundle[JPushInterface.EXTRA_CONTENT_TYPE]?.toString() ?: return
             Log.e("---", "---from:$from, type:$type")
 
-
             when (type) {
                 Config.MESSAGE_LOCATION -> {
                     LocationUtils.instance().startLocation(true, listener)

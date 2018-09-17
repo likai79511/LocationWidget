@@ -150,7 +150,7 @@ class PositionActivity : BaseActivity(), Updatable {
         mRefresh_repo.addUpdatable(this)
 
 
-        findViewById(R.id.btn_add).setOnClickListener {
+        findViewById(R.id.btn_add)?.setOnClickListener {
             showAddFriendDialog()
         }
 
