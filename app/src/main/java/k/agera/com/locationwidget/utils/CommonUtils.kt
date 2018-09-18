@@ -20,6 +20,7 @@ import android.view.WindowManager
 import android.widget.LinearLayout
 import android.widget.Toast
 import com.google.android.agera.Result
+import com.google.gson.Gson
 import k.agera.com.locationwidget.MyApp
 import k.agera.com.locationwidget.core.TaskDriver
 import k.agera.com.locationwidget.push.PushImp
@@ -33,6 +34,7 @@ class CommonUtils private constructor() {
 
     var ctx = MyApp.instance()
     var dateFormat = SimpleDateFormat("yyyy-MM-dd  HH:mm:ss")
+    var gson = Gson()
 
     companion object {
         private var instance: CommonUtils = CommonUtils()

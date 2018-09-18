@@ -14,6 +14,7 @@ import k.agera.com.locationwidget.core.TaskDriver
 import k.agera.com.locationwidget.login.SignImp
 import k.agera.com.locationwidget.login.SignInActivity
 import k.agera.com.locationwidget.push.PushImp
+import k.agera.com.locationwidget.utils.AppUpdateUtils
 import k.agera.com.locationwidget.utils.CommonUtils
 import k.agera.com.locationwidget.utils.Constants
 
@@ -42,7 +43,14 @@ class SplashActivity : BaseActivity(), Updatable {
             mImg.setImageDrawable(it)
             it.start()
         }
-        initEvents()
+
+
+        TaskDriver.instance().execute(Runnable {
+            AppUpdateUtils.instance().checkUpdate()
+        })
+
+
+//        initEvents()
     }
 
 
