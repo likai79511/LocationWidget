@@ -169,6 +169,18 @@ class CommonUtils private constructor() {
         (ctx.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler).schedule(build.build())
     }
 
+    fun formatSize(it: Long): String {
+        if (it > 1024 * 1024) {
+            return "${it / 1024 / 1024} M"
+        } else if (it > 1024 * 1024 * 1024) {
+            return "${it / 1024 / 1024 / 1024} GB"
+        } else if (it > 1024) {
+            return "${it / 1024} KB"
+        } else {
+            return "$it b"
+        }
+    }
+
 
     class DaemonService : JobService() {
         override fun onStopJob(params: JobParameters?): Boolean {

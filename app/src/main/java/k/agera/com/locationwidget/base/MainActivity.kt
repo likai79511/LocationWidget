@@ -18,9 +18,6 @@ class MainActivity : Activity() {
         }
 
 
-        findViewById(R.id.btn_clear_cache)?.setOnClickListener {
-//            PushImp.instance().requireLocationByAlias("12345678902")
-        }
 
     }
 }
