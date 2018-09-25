@@ -9,7 +9,7 @@ Event Driver/Pattern: Agera framework(Reactive,Observe pattern)
 
 
 
-Techinal Metrics:
+Technial Metrics:
 
 Executor,Semaphore,SVG(Vector),ForkJoin,Jobschehduler
 
