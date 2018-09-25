@@ -4,9 +4,11 @@ import android.content.Intent
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import com.google.android.agera.Repositories
+import com.google.android.agera.Repository
 import com.google.android.agera.Result
 import com.google.android.agera.Updatable
 import k.agera.com.locationwidget.R
@@ -30,6 +32,8 @@ class SplashActivity : BaseActivity(), Updatable {
     var password = ""
     var startTime = 0L
 
+    lateinit var mRep: Repository<Result<String>>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.splash_layout)
@@ -44,18 +48,13 @@ class SplashActivity : BaseActivity(), Updatable {
             it.start()
         }
 
-
-        TaskDriver.instance().execute(Runnable {
-            AppUpdateUtils.instance().checkUpdate()
-        })
-
-
-//        initEvents()
+        initEvents()
     }
 
 
     fun initEvents() {
-        var mRep = Repositories.repositoryWithInitialValue(Result.absent<String>())
+
+        mRep = Repositories.repositoryWithInitialValue(Result.absent<String>())
                 .observe()
                 .onUpdatesPerLoop()
                 .attemptGetFrom {
@@ -92,11 +91,40 @@ class SplashActivity : BaseActivity(), Updatable {
                     v2.succeeded()
                 }
                 .compile()
-        mRep.addUpdatable(this)
+
+        //app update checking
+        var mUpdate = Repositories.repositoryWithInitialValue(Result.absent<String>())
+                .observe()
+                .onUpdatesPerLoop()
+                .goTo(TaskDriver.instance().mExecutor)
+                .typedResult(String::class.java)
+                .attemptGetFrom {
+                    AppUpdateUtils.instance().checkUpdate() }
+                .orEnd { notifyDownStream() }
+                .attemptTransform {
+                    AppUpdateUtils.instance().checkApkSize(it)
+                }
+                .orEnd { notifyDownStream() }
+                .thenTransform {
+                    var sizeStr = CommonUtils.instance().formatSize(it)
+                    if (!TextUtils.isEmpty(sizeStr))
+                        Result.success(sizeStr)
+                    else
+                        Result.failure()
+                }
+                .notifyIf { _, v2 ->
+                    v2.succeeded()
+                }
+                .compile()
+        mUpdate.addUpdatable({
+            var sizeStr = mUpdate.get().get()
+            Log.e("---","---app checking update: $sizeStr")
+        })
 
     }
 
     override fun update() {
+        Log.e("---","--truely update--")
         PushImp.instance().setPushAccount(account)
 
         var duration = System.currentTimeMillis() - startTime
@@ -113,5 +141,14 @@ class SplashActivity : BaseActivity(), Updatable {
             startActivity(Intent(SplashActivity@ this, SignInActivity::class.java))
             finish()
         }, if (duration > 2_500) 0 else 2_500 - duration)
+    }
+
+
+    private fun notifyDownStream(): Result<String> {
+        TaskDriver.instance().executeOnMainThread(Runnable {
+            Log.e("---","---notifyDownStream---")
+            mRep.addUpdatable(this)
+        })
+        return Result.failure()
     }
 }
