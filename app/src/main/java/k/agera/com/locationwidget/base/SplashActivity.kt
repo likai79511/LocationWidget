@@ -52,15 +52,12 @@ class SplashActivity : BaseActivity(), Updatable {
         mTv_progress = findViewById(R.id.tv_progress) as TextView
         mSk_progress = findViewById(R.id.sk_progress) as SeekBar
 
-
         startTime = System.currentTimeMillis()
-
         var d: AnimatedVectorDrawable = getDrawable(R.drawable.logo_anim_vector) as AnimatedVectorDrawable
         d?.let {
             mImg.setImageDrawable(it)
             it.start()
         }
-
         initEvents()
     }
 
@@ -132,7 +129,6 @@ class SplashActivity : BaseActivity(), Updatable {
                 .compile()
         mUpdate.addUpdatable({
             var sizeStr = mUpdate.get().get()
-            Log.e("---", "---app checking update: $sizeStr")
             //show dialog
             var dialog = AlertDialog.Builder(this@SplashActivity)
             dialog.setMessage("有新版本发行，文件大小:$sizeStr")
@@ -142,6 +138,8 @@ class SplashActivity : BaseActivity(), Updatable {
                 notifyDownStream()
             })
             dialog.setPositiveButton("更新", DialogInterface.OnClickListener { dg, _ ->
+                //show progress
+                mLl_progress.visibility = View.VISIBLE
                 dg.dismiss()
                 upgrade()
             })
@@ -151,9 +149,7 @@ class SplashActivity : BaseActivity(), Updatable {
     }
 
     override fun update() {
-        Log.e("---", "--truely update--")
         PushImp.instance().setPushAccount(account)
-
         var duration = System.currentTimeMillis() - startTime
         mRoot.postDelayed({
             startActivity(Intent(SplashActivity@ this, MainActivity::class.java))
@@ -173,22 +169,28 @@ class SplashActivity : BaseActivity(), Updatable {
 
     private fun notifyDownStream(): Result<String> {
         TaskDriver.instance().executeOnMainThread(Runnable {
-            Log.e("---", "---notifyDownStream---")
             mRep.addUpdatable(this)
         })
         return Result.failure()
     }
 
     fun upgrade() {
-        //show progress
-        mLl_progress.visibility = View.VISIBLE
-        Log.e("---","---show seek bar--")
-        var startTimes = System.currentTimeMillis()
-        AppUpdateUtils.instance().downloadApk()
-        Log.e("---", "--download finish--, duration:${System.currentTimeMillis() - startTimes}")
+        Log.e("---", "---show seek bar--")
+        AppUpdateUtils.mPbListener = object : onRefreshProgressListener {
+            override fun onProgress(progress: Int) {
+                mSk_progress.post {
+                    mSk_progress.progress = progress
+                    mTv_progress.text = "$progress%"
+                }
+            }
+        }
+
+        TaskDriver.instance().execute(Runnable {
+            AppUpdateUtils.instance().downloadApk()
+        })
     }
 
-    fun freshLoadingProgress(progress: Int) {
-
+    interface onRefreshProgressListener {
+        fun onProgress(progress: Int)
     }
 }
