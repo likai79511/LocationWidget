@@ -4,9 +4,10 @@ import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.drawable.AnimatedVectorDrawable
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.text.TextUtils
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -24,6 +25,7 @@ import k.agera.com.locationwidget.push.PushImp
 import k.agera.com.locationwidget.utils.AppUpdateUtils
 import k.agera.com.locationwidget.utils.CommonUtils
 import k.agera.com.locationwidget.utils.Constants
+import java.io.File
 
 /**
  * Created by Agera on 2018/8/23.
@@ -175,7 +177,6 @@ class SplashActivity : BaseActivity(), Updatable {
     }
 
     fun upgrade() {
-        Log.e("---", "---show seek bar--")
         AppUpdateUtils.mPbListener = object : onRefreshProgressListener {
             override fun onProgress(progress: Int) {
                 mSk_progress.post {
@@ -186,11 +187,23 @@ class SplashActivity : BaseActivity(), Updatable {
         }
 
         TaskDriver.instance().execute(Runnable {
-            AppUpdateUtils.instance().downloadApk()
+            var flag = AppUpdateUtils.instance().downloadApk()
+            if (flag)
+                installApk()
         })
     }
 
     interface onRefreshProgressListener {
         fun onProgress(progress: Int)
+    }
+
+    fun installApk() {
+        TaskDriver.instance().executeOnMainThread(Runnable {
+            var intent = Intent(Intent.ACTION_VIEW)
+            intent.addCategory(Intent.CATEGORY_DEFAULT)
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            intent.setDataAndType(Uri.fromFile(File("${Environment.getExternalStorageDirectory().absoluteFile}/download/location-prod.apk")), "application/vnd.android.package-archive")
+            startActivity(intent)
+        })
     }
 }
