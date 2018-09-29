@@ -1,4 +1,4 @@
 {
-	"versionCode": 4,
+	"versionCode": 6,
 	"url": "https://raw.githubusercontent.com/likai79511/LocationWidget/master/apk/app-locationProd-release.apk"
 }
